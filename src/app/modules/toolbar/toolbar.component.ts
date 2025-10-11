@@ -9,5 +9,9 @@ import { MaterialModule } from '../../material/modules';
   styleUrl: './toolbar.component.css'
 })
 export class ToolbarComponent {
+  userType = 'Guest';
 
+  protected logout(): void {
+    console.log('User logged out');
+  }
 }
