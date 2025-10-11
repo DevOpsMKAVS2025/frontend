@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 import { LandingPageComponent } from './modules/landing-page/landing-page.component';
-import { GuestRequestsTableComponent } from './modules/request/guest-requests-table/guest-requests-table.component';
+import { GuestRequestReservationComponent } from './modules/guest-request-reservation/guest-request-reservation.component';
 
 export const routes: Routes = [
-    { path: 'guest-requests', component: GuestRequestsTableComponent },
+    { path: 'guest/:type', component: GuestRequestReservationComponent },
     { path: '**', component: LandingPageComponent }
 ];

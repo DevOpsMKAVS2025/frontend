@@ -3,8 +3,8 @@
   <span class="fill-remaining-space"></span>
   @if(userType === 'Guest')
   {
-    <a class="nav-button" href="/guest-requests">Requests</a>
-    <a class="nav-button" href="/my-organization">Reservations</a>
+    <a class="nav-button" href="/guest/requests">Requests</a>
+    <a class="nav-button" href="/guest/reservations">Reservations</a>
     <a class="nav-button" (click)="logout()">Logout</a>
   } @else if(userType === 'Host')
   {
