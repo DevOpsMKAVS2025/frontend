@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MaterialModule } from '../../material/modules';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-toolbar',
@@ -9,9 +10,11 @@ import { MaterialModule } from '../../material/modules';
   styleUrl: './toolbar.component.css'
 })
 export class ToolbarComponent {
+  readonly #router = inject(Router);
+
   userType = 'Guest';
 
   protected logout(): void {
-    console.log('User logged out');
+    this.#router.navigate(['/']);
   }
 }
