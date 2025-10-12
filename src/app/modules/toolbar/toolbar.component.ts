@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 export class ToolbarComponent {
   readonly #router = inject(Router);
 
-  userType = 'Guest';
+  userType = 'Host';
 
   protected logout(): void {
     this.#router.navigate(['/']);
