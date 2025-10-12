@@ -1,3 +1,13 @@
+<div class="header">
+  <h2>{{ tableType === 'requests' ? 'Guest Requests' : 'Reservations' }}</h2>
+
+  @if (tableType === 'requests') {
+    <button mat-raised-button class="create-request-button" color="primary" (click)="openCreateRequestDialog()">
+      Create New Request
+    </button>
+  }
+</div>
+
 <table mat-table [dataSource]="rows" class="mat-elevation-z8 full-width">
 
   <!-- Dynamic columns -->
