@@ -6,16 +6,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal.component';
+import { CreateRequestModalComponent } from '../modal/create-request-modal/create-request-modal.component';
 
 @Component({
   selector: 'app-guest-request-reservation',
   standalone: true,
   imports: [CommonModule, MatTableModule, MatButtonModule, MatTooltipModule],
   templateUrl: './guest-request-reservation.component.html',
+  styleUrl: './guest-request-reservation.component.css'
 })
 export class GuestRequestReservationComponent {
-  private route = inject(ActivatedRoute);
-  private dialog = inject(MatDialog);
+  readonly #route = inject(ActivatedRoute);
+  readonly #dialog = inject(MatDialog);
 
   tableType: 'requests' | 'reservations' = 'requests';
 
@@ -38,7 +40,7 @@ export class GuestRequestReservationComponent {
   }
 
   ngOnInit(): void {
-    const type = this.route.snapshot.paramMap.get('type');
+    const type = this.#route.snapshot.paramMap.get('type');
     this.tableType = type === 'reservations' ? 'reservations' : 'requests';
 
     if (this.tableType === 'requests') {
@@ -57,8 +59,8 @@ export class GuestRequestReservationComponent {
     }
   }
 
-  public onAction(action: string, row: any): void {
-    this.dialog
+  protected onAction(action: string, row: any): void {
+    this.#dialog
       .open(ConfirmModalComponent, {
         width: '400px',
         data: {
@@ -72,5 +74,17 @@ export class GuestRequestReservationComponent {
           this.rows = this.rows.filter((r) => r !== row);
         }
       });
+  }
+
+  protected openCreateRequestDialog(): void {
+    const dialogRef = this.#dialog.open(CreateRequestModalComponent, {
+      width: '450px',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.rows = [...this.rows, result];
+      }
+    });
   }
 }
