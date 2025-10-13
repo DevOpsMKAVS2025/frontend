@@ -1,2 +1,19 @@
-<mat-button-toggle>milose namesti</mat-button-toggle>
-<p>toolbar works!</p>
+<mat-toolbar color="primary">
+  <a class="title-button" href="/">Booking</a>
+  <span class="fill-remaining-space"></span>
+  @if(userType === 'Guest')
+  {
+    <a class="nav-button" href="/guest/requests">Requests</a>
+    <a class="nav-button" href="/guest/reservations">Reservations</a>
+    <a class="nav-button" (click)="logout()">Logout</a>
+  } @else if(userType === 'Host')
+  {
+    <a class="nav-button" href="/host/requests">Requests</a>
+    <a class="nav-button" href="/host/reservations">Reservations</a>
+    <a class="nav-button" (click)="logout()">Logout</a>
+  } @else
+  {
+    <a class="nav-button" href="/login">Login</a>
+    <a class="nav-button" href="/sign-up">Sign Up</a>
+  }
+</mat-toolbar>

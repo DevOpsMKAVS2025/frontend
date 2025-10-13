@@ -1,0 +1,15 @@
+.header {
+  display: flex;
+  align-items: center;         
+  justify-content: space-between; 
+  margin-bottom: 16px;
+}
+
+.header h2 {
+  margin: 0;                 
+  font-weight: 400;
+}
+
+.header button {
+  height: 36px;    
+}
