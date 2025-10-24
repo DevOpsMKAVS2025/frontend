@@ -5,93 +5,89 @@ on:
     branches:
       feature/cicd
 
-default:
-  interruptible: true
-  image: node:lts-alpine
+jobs:
+  install:
+    name: Install dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-stages:
-  - dependencies
-  - quality
-  - assemble
-  - deploy
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
 
-install:
-  stage: dependencies
-  script:
-    # Install dependencies
-    - npm install --prefer-offline
-  cache:
-    key:
-      files:
-        - package.json
-    paths:
-      - node_modules
-
-lint:
-  stage: quality
-  needs: ["install"]
-  script:
-    - npm run lint
-  cache:
-    key:
-      files:
-        - package.json
-    paths:
-      - node_modules
-    policy: pull
-
-test:
-  stage: quality
-  needs: ["install"]
-  before_script:
-    # Download Chrome
-    - apk add chromium
-    - export CHROME_BIN=/usr/bin/chromium-browser
-    - export CHROME_PATH=/usr/lib/chromium/
-    # Download Firefox
-    - apk add firefox-esr
-    - export FIREFOX_BIN=/usr/bin/firefox
-    - export FIREFOX_PATH=/usr/lib/firefox/
-    # X Server
-    - apk add xvfb
-    - export DISPLAY=:99
-    - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-  script:
-    - npm run test -- --browsers=Headless_Chrome --no-watch
-  cache:
-    key:
-      files:
-        - package.json
-    paths:
-      - node_modules
-    policy: pull
-
-assemble:
-  stage: assemble
-  needs: ["test", "lint"]
-  script:
-    - npm run build
-  artifacts:
-    paths:
-      - $CI_PROJECT_DIR/dist
-  cache:
-    key:
-      files:
-        - package.json
-    paths:
-      - node_modules
-    policy: pull
+      - name: Install dependencies
+        run: npm ci
 
 
-deploy-dev:
-  stage: deploy
-  variables:
-    NODE_ENV: development
-  needs: ["assemble"]
-  before_script:
-    - echo "Deploying to $CI_ENVIRONMENT_NAME"
-  script:
-    - echo "Making actions to deploy to dev"
-    - echo "Deployed to $CI_ENVIRONMENT_NAME"
-  environment:
-    name: development
+  # lint:
+  #   stage: quality
+  #   needs: ["install"]
+  #   script:
+  #     - npm run lint
+  #   cache:
+  #     key:
+  #       files:
+  #         - package.json
+  #     paths:
+  #       - node_modules
+  #     policy: pull
+
+  # test:
+  #   stage: quality
+  #   needs: ["install"]
+  #   before_script:
+  #     # Download Chrome
+  #     - apk add chromium
+  #     - export CHROME_BIN=/usr/bin/chromium-browser
+  #     - export CHROME_PATH=/usr/lib/chromium/
+  #     # Download Firefox
+  #     - apk add firefox-esr
+  #     - export FIREFOX_BIN=/usr/bin/firefox
+  #     - export FIREFOX_PATH=/usr/lib/firefox/
+  #     # X Server
+  #     - apk add xvfb
+  #     - export DISPLAY=:99
+  #     - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+  #   script:
+  #     - npm run test -- --browsers=Headless_Chrome --no-watch
+  #   cache:
+  #     key:
+  #       files:
+  #         - package.json
+  #     paths:
+  #       - node_modules
+  #     policy: pull
+
+  # assemble:
+  #   stage: assemble
+  #   needs: ["test", "lint"]
+  #   script:
+  #     - npm run build
+  #   artifacts:
+  #     paths:
+  #       - $CI_PROJECT_DIR/dist
+  #   cache:
+  #     key:
+  #       files:
+  #         - package.json
+  #     paths:
+  #       - node_modules
+  #     policy: pull
+
+
+  # deploy-dev:
+  #   stage: deploy
+  #   variables:
+  #     NODE_ENV: development
+  #   needs: ["assemble"]
+  #   before_script:
+  #     - echo "Deploying to $CI_ENVIRONMENT_NAME"
+  #   script:
+  #     - echo "Making actions to deploy to dev"
+  #     - echo "Deployed to $CI_ENVIRONMENT_NAME"
+  #   environment:
+  #     name: development
