@@ -37,7 +37,7 @@ jobs:
           cache: npm
 
       - name: Run lint
-        run: npx run lint
+        run: npx eslint
 
 
   # test:
