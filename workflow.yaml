@@ -1,5 +1,9 @@
-trigger:
-- feature/cicd
+name: frontend workflow
+
+on:
+  push:
+    branches:
+      feature/cicd
 
 default:
   interruptible: true
