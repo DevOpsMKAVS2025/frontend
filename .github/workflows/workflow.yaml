@@ -35,9 +35,6 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          
-      - name: Install Angular CLI (if needed for global commands)
-        run: npm install -g @angular/cli
 
       - name: Run lint
         run: npx run eslint
@@ -55,7 +52,8 @@ jobs:
         with:
           node-version: 20
           cache: npm
-
+      - name: Install Angular CLI (if needed for global commands)
+        run: npm install -g @angular/cli
       - name: Install browsers
         run: |
           sudo apt-get update
