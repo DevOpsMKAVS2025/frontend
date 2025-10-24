@@ -39,7 +39,7 @@ jobs:
       - name: Run lint
         run: npx run eslint
 
-test:
+  test:
     name: Run Tests
     runs-on: ubuntu-latest
     needs: install
