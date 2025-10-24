@@ -20,7 +20,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
   lint:
     name: Lint Code
@@ -37,34 +37,33 @@ jobs:
           cache: npm
 
       - name: Run lint
-        run: npx eslint
+        run: npx run eslint
 
+test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  # test:
-  #   stage: quality
-  #   needs: ["install"]
-  #   before_script:
-  #     # Download Chrome
-  #     - apk add chromium
-  #     - export CHROME_BIN=/usr/bin/chromium-browser
-  #     - export CHROME_PATH=/usr/lib/chromium/
-  #     # Download Firefox
-  #     - apk add firefox-esr
-  #     - export FIREFOX_BIN=/usr/bin/firefox
-  #     - export FIREFOX_PATH=/usr/lib/firefox/
-  #     # X Server
-  #     - apk add xvfb
-  #     - export DISPLAY=:99
-  #     - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-  #   script:
-  #     - npm run test -- --browsers=Headless_Chrome --no-watch
-  #   cache:
-  #     key:
-  #       files:
-  #         - package.json
-  #     paths:
-  #       - node_modules
-  #     policy: pull
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install browsers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser firefox xvfb
+          export CHROME_BIN=/usr/bin/chromium-browser
+          export FIREFOX_BIN=/usr/bin/firefox
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+      - name: Run unit tests
+        run: npm run test -- --browsers=ChromeHeadless --no-watch
+
 
   # assemble:
   #   stage: assemble
