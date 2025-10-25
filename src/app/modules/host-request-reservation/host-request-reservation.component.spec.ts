@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HostRequestReservationComponent } from './host-request-reservation.component';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 
 describe('HostRequestReservationComponent', () => {
   let component: HostRequestReservationComponent;
@@ -8,7 +9,15 @@ describe('HostRequestReservationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HostRequestReservationComponent]
+      imports: [HostRequestReservationComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { paramMap: convertToParamMap({ type: 'host' }) },
+          },
+        },
+      ],
     })
     .compileComponents();
 

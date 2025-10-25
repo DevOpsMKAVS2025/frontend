@@ -44,6 +44,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
       - if: steps.npm_cache_id.outputs.cache-hit != 'true'
         name: Restore node modules cache
         run: npm ci
