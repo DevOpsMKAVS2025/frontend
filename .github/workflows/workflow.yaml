@@ -18,6 +18,25 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+        name: List the state of node modules
+        continue-on-error: true
+        run: npm list
 
       - name: Install dependencies
         run: npm ci
@@ -66,23 +85,6 @@ jobs:
           Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
       - name: Run unit tests
         run: npm run test -- --browsers=ChromeHeadless --no-watch
-
-
-  # assemble:
-  #   stage: assemble
-  #   needs: ["test", "lint"]
-  #   script:
-  #     - npm run build
-  #   artifacts:
-  #     paths:
-  #       - $CI_PROJECT_DIR/dist
-  #   cache:
-  #     key:
-  #       files:
-  #         - package.json
-  #     paths:
-  #       - node_modules
-  #     policy: pull
 
 
   # deploy-dev:
