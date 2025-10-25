@@ -68,7 +68,12 @@ jobs:
         run: npm ci
 
       - name: Run lint
-        run: npm run lint
+        run: |
+          echo "Listing files in current directory:"
+          ls -la
+          echo "Listing JS/TS files that ESLint will check:"
+          find . -type f \( -name "*.ts" -o -name "*.js" \)
+          npm run lint
 
   test:
     name: Run Tests
