@@ -100,22 +100,11 @@ jobs:
       - name: Run unit tests
         run: npm run test -- --browsers=ChromeHeadless --no-watch
 
-  docker:
-    name: Build and Push Docker Image
-    runs-on: ubuntu-latest
-    needs: test
+  # docker:
+  #   name: Build and Push Docker Image
+  #   runs-on: ubuntu-latest
+  #   needs: test
 
-    env:
-      IMAGE_NAME: selenamilutin/devops-frontend
-  # deploy-dev:
-  #   stage: deploy
-  #   variables:
-  #     NODE_ENV: development
-  #   needs: ["assemble"]
-  #   before_script:
-  #     - echo "Deploying to $CI_ENVIRONMENT_NAME"
-  #   script:
-  #     - echo "Making actions to deploy to dev"
-  #     - echo "Deployed to $CI_ENVIRONMENT_NAME"
-  #   environment:
-  #     name: development
+  #   env:
+  #     IMAGE_NAME: selenamilutin/devops-frontend
+
