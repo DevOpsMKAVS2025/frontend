@@ -101,14 +101,32 @@ jobs:
         name: Install dependencies
         run: npm ci
       
-      - name: Install browsers
+      - name: Cache browsers
+        id: cache-browsers
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-browsers
+        with:
+          path: ${{ runner.temp }}/browsers
+          key: ${{ runner.os }}-${{ env.cache-name }}
+          restore-keys: |
+            ${{ runner.os }}-browser
+      - if:  ${{ steps.cache-browsers.outputs.cache-hit != 'true'}}
+        name: Install browsers
         run: |
+          mkdir -p ${{ runner.temp }}/browsers
           sudo apt-get update
           sudo apt-get install -y chromium-browser firefox xvfb
+          cp /usr/bin/chromium-browser ${{ runner.temp }}/browsers/
+          cp /usr/bin/firefox ${{ runner.temp }}/browsers/
+
+      - name: Set browser environment
+        run: |
           export CHROME_BIN=/usr/bin/chromium-browser
           export FIREFOX_BIN=/usr/bin/firefox
           export DISPLAY=:99
           Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          
       - name: Run unit tests
         run: npm run test -- --browsers=ChromeHeadless --no-watch
 
