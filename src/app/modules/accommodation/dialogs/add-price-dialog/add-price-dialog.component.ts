@@ -1,0 +1,54 @@
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
+@Component({
+  selector: 'app-add-price-dialog',
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule
+  ],
+  templateUrl: './add-price-dialog.component.html',
+  styleUrl: './add-price-dialog.component.css'
+})
+export class AddPriceDialogComponent {
+  form: FormGroup;
+
+  constructor(
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<AddPriceDialogComponent> 
+  ) {
+    this.form = this.fb.group({
+      start: [null, Validators.required],
+      end: [null, Validators.required],
+      amount: [null, [Validators.required, Validators.min(1)]],
+    });
+  }
+
+  save() {
+    if (this.form.invalid) return;
+
+    const price = {
+      start: this.form.value.start,
+      end: this.form.value.end,
+      amount: this.form.value.amount,
+    };
+
+    this.dialogRef.close(price);
+  }
+
+  cancel() {
+    this.dialogRef.close();
+  }
+}
