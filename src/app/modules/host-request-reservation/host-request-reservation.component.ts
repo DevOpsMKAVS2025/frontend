@@ -7,6 +7,8 @@ import { MatDialog } from '@angular/material/dialog';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal.component';
+import { RequestService } from '../../services/request.service';
+import { RequestCancelation } from '../../models/request';
 
 @Component({
   selector: 'app-host-request-reservation',
@@ -16,6 +18,7 @@ import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal.com
   styleUrl: './host-request-reservation.component.css',
 })
 export class HostRequestReservationComponent implements OnInit {
+  readonly #requestService = inject(RequestService);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
 
@@ -44,8 +47,8 @@ export class HostRequestReservationComponent implements OnInit {
         user: 'User',
         startDate: 'Start Date',
         endDate: 'End Date',
-        guests: 'Guests',
-        cancellations: 'Cancellations',
+        guestNum: 'Guests',
+        previousCancellations: 'Cancellations',
       };
       this.actions = [
         { name: 'approve', label: 'Approve', color: 'primary' },
@@ -57,7 +60,7 @@ export class HostRequestReservationComponent implements OnInit {
         user: 'User',
         startDate: 'Start Date',
         endDate: 'End Date',
-        guests: 'Guests',
+        guestNum: 'Guests',
       };
       this.actions = [];
       this.#getReservations();
@@ -65,19 +68,19 @@ export class HostRequestReservationComponent implements OnInit {
   }
 
   #getRequests(): void {
-    // TODO: Fetch requests from API
-    this.rows = [
-      { user: 'John Doe', startDate: '2025-10-11', endDate: '2025-10-15', guests: 2, cancellations: 1 },
-      { user: 'Jane Smith', startDate: '2025-11-01', endDate: '2025-11-05', guests: 1, cancellations: 0 },
-    ];
+    this.#requestService.getAccommodationRequests('3fa85f64-5717-4562-b3fc-2c963f66afa6') // todo
+    .subscribe((data: RequestCancelation[]) => {
+      this.rows = data;
+    });
+    // todo: Fetch user name 
   }
 
   #getReservations(): void {
-    // TODO: Fetch reservations from API
-    this.rows = [
-      { user: 'Alice', startDate: '2025-12-20', endDate: '2025-12-25', guests: 4 },
-      { user: 'Bob', startDate: '2025-11-05', endDate: '2025-11-10', guests: 1 },
-    ];
+     this.#requestService.getAccommodationReservations('3fa85f64-5717-4562-b3fc-2c963f66afa6') // todo
+    .subscribe((data: Request[]) => {
+      this.rows = data;
+    });
+    // todo: Fetch user name 
   }
 
   protected onAction(action: string, row: any): void {
@@ -100,8 +103,15 @@ export class HostRequestReservationComponent implements OnInit {
       .afterClosed()
       .subscribe((confirmed) => {
         if (confirmed) {
-          // TODO: Perform action (approve/reject) via API
-          this.#getRequests();
+          if (action === 'approve') {
+            this.#requestService.approveRequest(row.requestId).subscribe(() => {
+              this.#getRequests();
+            });
+          } else if (action === 'reject') {
+            this.#requestService.deleteRequest(row.requestId).subscribe(() => {
+              this.#getRequests();
+            });
+          }
         }
       });
   }
