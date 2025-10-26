@@ -70,7 +70,7 @@ export class HostRequestReservationComponent implements OnInit {
   }
 
   #getRequests(): void {
-    this.#requestService.getAccommodationRequests('3fa85f64-5717-4562-b3fc-2c963f66afa6') // todo
+    this.#requestService.getAccommodationRequests('0fa85f64-5717-4562-b3fc-2c963f66afa0') // todo
     .subscribe((data: RequestCancelation[]) => {
       this.rows = data;
     });
@@ -78,7 +78,7 @@ export class HostRequestReservationComponent implements OnInit {
   }
 
   #getReservations(): void {
-     this.#requestService.getAccommodationReservations('3fa85f64-5717-4562-b3fc-2c963f66afa6') // todo
+     this.#requestService.getAccommodationReservations('0fa85f64-5717-4562-b3fc-2c963f66afa0') // todo
     .subscribe((data: Request[]) => {
       this.rows = data;
     });
@@ -119,7 +119,7 @@ export class HostRequestReservationComponent implements OnInit {
   }
 
   protected onAutoApproveChange(checked: boolean): void {
-    this.#accommodationService.toggleAutoReservation('3fa85f64-5717-4562-b3fc-2c963f66afa6') // todo
+    this.#accommodationService.toggleAutoReservation('0fa85f64-5717-4562-b3fc-2c963f66afa0') // todo
     .subscribe(() => {});
   }
 }

@@ -8,11 +8,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal.component';
 import { CreateRequestModalComponent } from '../modal/create-request-modal/create-request-modal.component';
 import { RequestService } from '../../services/request.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-guest-request-reservation',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatTooltipModule],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatTooltipModule, MatSnackBarModule],
   templateUrl: './guest-request-reservation.component.html',
   styleUrl: './guest-request-reservation.component.css',
 })
@@ -20,6 +21,7 @@ export class GuestRequestReservationComponent {
   readonly #requestService = inject(RequestService);
   readonly #route = inject(ActivatedRoute);
   readonly #dialog = inject(MatDialog);
+  readonly #snackBar = inject(MatSnackBar);
 
   tableType: 'requests' | 'reservations' = 'requests';
 
@@ -100,9 +102,21 @@ export class GuestRequestReservationComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('New Request Data:', result);
-        this.#requestService.createRequest(result).subscribe(() => {
-          this.#getRequests();
+        this.#requestService.createRequest(result).subscribe({
+          next: () => {
+            this.#getRequests();
+          },
+          error: (err) => {
+            if (err.status === 500) {
+              const message = err.error?.detail || 'Unexpected error';
+              const match = message.match(/'(.*?)'/);
+              const textToShow = match ? match[1] : message;
+
+              this.#snackBar.open(textToShow, 'OK', {
+                duration: 3000
+              });
+            }
+          }
         });
       }
     });
