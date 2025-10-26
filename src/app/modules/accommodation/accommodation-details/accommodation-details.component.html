@@ -1,0 +1,57 @@
+<div *ngIf="accommodation" class="details-container">
+  <h2>{{ accommodation.name }}</h2>
+  <p><strong>Location:</strong> {{ accommodation.location }}</p>
+  <p><strong>Guests:</strong> {{ accommodation.minGuestNumber }} - {{ accommodation.maxGuestNumber }}</p>
+  <p><strong>Conveniences:</strong> {{ accommodation.conveniences?.join(', ') }}</p>
+  <p><strong>Global Price:</strong> {{ accommodation.globalPrice | number:'1.0-2' }}</p>
+
+  <div *ngIf="accommodation.photos?.length" class="photo-section">
+    <p><strong>Photos:</strong></p>
+    <div class="photo-previews">
+      <img *ngFor="let p of accommodation.photos" [src]="p" />
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button mat-raised-button color="primary" (click)="addAvailability()">Add Availability</button>
+    <button mat-raised-button color="primary" (click)="addPrice()">Add Price</button>
+  </div>
+
+  <h3>Availabilities</h3>
+  <table mat-table [dataSource]="accommodation.availability" class="mat-elevation-z8">
+    <ng-container matColumnDef="start">
+      <th mat-header-cell *matHeaderCellDef>Start</th>
+      <td mat-cell *matCellDef="let a">{{ a.duration.start | date }}</td>
+    </ng-container>
+    <ng-container matColumnDef="end">
+      <th mat-header-cell *matHeaderCellDef>End</th>
+      <td mat-cell *matCellDef="let a">{{ a.duration.end | date }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['start', 'end']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['start', 'end']"></tr>
+  </table>
+
+  <h3>Prices</h3>
+  <table mat-table [dataSource]="accommodation.prices" class="mat-elevation-z8">
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef>Amount</th>
+      <td mat-cell *matCellDef="let p">{{ p.amount | number:'1.0-2' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef>Type</th>
+      <td mat-cell *matCellDef="let p">{{ p.priceType }}</td>
+    </ng-container>
+    <ng-container matColumnDef="start">
+      <th mat-header-cell *matHeaderCellDef>Start</th>
+      <td mat-cell *matCellDef="let p">{{ p.duration.start | date }}</td>
+    </ng-container>
+    <ng-container matColumnDef="end">
+      <th mat-header-cell *matHeaderCellDef>End</th>
+      <td mat-cell *matCellDef="let p">{{ p.duration.end | date }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['amount','type','start','end']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['amount','type','start','end']"></tr>
+  </table>
+</div>

@@ -1,0 +1,33 @@
+.details-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.photo-section {
+  margin-bottom: 20px;
+}
+
+.photo-previews {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.photo-previews img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.buttons {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+}
+
+table {
+  width: 100%;
+  margin-bottom: 20px;
+}

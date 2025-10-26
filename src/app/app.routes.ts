@@ -8,6 +8,7 @@ import { AccountPageComponent } from './modules/account-page/account-page.compon
 import { RatingComponent } from './modules/rating/rating.component';
 import { SearchAccommodationComponent } from './modules/accommodation/search-accommodation/search-accommodation.component';
 import { HostAccommodationComponent } from './modules/accommodation/host-accommodation/host-accommodation.component';
+import { AccommodationDetailsComponent } from './modules/accommodation/accommodation-details/accommodation-details.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
@@ -18,5 +19,6 @@ export const routes: Routes = [
   { path: 'rating', component: RatingComponent },
   { path: 'accommodations', component: SearchAccommodationComponent},
   { path: 'accommodations/host', component: HostAccommodationComponent},
+  { path: 'accommodation-details/:id', component: AccommodationDetailsComponent},
   { path: '**', component: LandingPageComponent },
 ];

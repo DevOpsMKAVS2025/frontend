@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateAccommodationDialogComponent } from '../dialogs/create-accommodation-dialog/create-accommodation-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-host-accommodation',
@@ -14,14 +15,14 @@ import { CreateAccommodationDialogComponent } from '../dialogs/create-accommodat
   templateUrl: './host-accommodation.component.html',
   styleUrl: './host-accommodation.component.css'
 })
-export class HostAccommodationComponent implements OnInit{
+export class HostAccommodationComponent implements OnInit {
   accommodations: Accommodation[] = [];
   displayedColumns: string[] = ['name', 'location', 'guests', 'conveniences', 'actions'];
   dataSource!: MatTableDataSource<any>;
-  
+
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private fb: FormBuilder, private dialog: MatDialog) {}
+  constructor(private fb: FormBuilder, private dialog: MatDialog, private router: Router) { }
 
   ngOnInit(): void {
     this.accommodations = [  // TODO: call here service and then backend
@@ -58,33 +59,29 @@ export class HostAccommodationComponent implements OnInit{
   }
 
   addAccommodation() {
-     const dialogRef = this.dialog.open(CreateAccommodationDialogComponent, {
-    width: '600px',
-    data: {}
-  });
+    const dialogRef = this.dialog.open(CreateAccommodationDialogComponent, {
+      width: '600px',
+      data: {}
+    });
 
-  dialogRef.afterClosed().subscribe(result => {
-    if (result) {
-      console.log('New Accommodation:', result);
-      this.accommodations.push(result);
-      this.dataSource.data = this.accommodations;
-    }
-  });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('New Accommodation:', result);
+        this.accommodations.push(result);
+        this.dataSource.data = this.accommodations;
+      }
+    });
   }
 
   deleteAccommodation(a: Accommodation) {
     this.accommodations = this.accommodations.filter(x => x.id !== a.id);  // TODO: call service
   }
 
-  addAvailability(a: Accommodation) {
-    // Open dialog to select start/end date
-  }
-
-  changePrice(a: Accommodation) {
-    // Open dialog to change price
-  }
-
   showConveniences(a: Accommodation) {
     return a.conveniences.join(', ');
+  }
+
+  openAccommodationDetails(accommodation: any) {
+    this.router.navigate(['/accommodation-details', accommodation.id]);  // TODO: check if this is actually accommodation id
   }
 }
