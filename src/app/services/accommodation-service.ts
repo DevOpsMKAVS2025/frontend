@@ -70,6 +70,27 @@ export class AccommodationService {
     return of(this.data);  // TODO: call backend API here
   }
 
+  getAccommodationById(id: string): Observable<Accommodation>{
+    return  of({
+      id: '3',
+      name: 'Quiet Mountain Cabin',
+      location: 'Kopaonik',
+      conveniences: [ConvenieceType.KITCHEN, ConvenieceType.FREE_PARKING],
+      photos: [],
+      minGuestNumber: 2,
+      maxGuestNumber: 5,
+      availability: [
+        { id: 'c1', duration: { start: '2025-01-01', end: '2025-03-31' } },
+        { id: 'c2', duration: { start: '2025-12-01', end: '2025-12-31' } }
+      ],
+      prices: [
+        { id: 'p4', amount: 40, duration: { start: '2025-12-01', end: '2025-12-31' }, priceType: PriceType.PER_UNIT }
+      ],
+      globalPrice: 35,
+      ownerId: 'host3'
+    });
+  }
+
   search(location: string, guests: number, start: string, end: string) : Observable<Accommodation[]> {
     return of(this.data);  // TODO: call filter API here
   }
