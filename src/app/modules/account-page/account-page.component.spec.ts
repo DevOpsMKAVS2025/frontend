@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AccountPageComponent } from './account-page.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import {UserService} from "../../services/user.service";
 
 describe('AccountPageComponent', () => {
   let component: AccountPageComponent;
@@ -8,9 +10,13 @@ describe('AccountPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccountPageComponent]
-    })
-    .compileComponents();
+      imports: [
+        AccountPageComponent,
+        HttpClientTestingModule,
+        RouterTestingModule
+      ],
+      providers: [UserService]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AccountPageComponent);
     component = fixture.componentInstance;
