@@ -3,7 +3,8 @@ name: frontend workflow
 on:
   push:
     branches:
-      feature/cicd
+      main
+      develop
     tags:
     - 'v*.*.*'
   pull_request:
