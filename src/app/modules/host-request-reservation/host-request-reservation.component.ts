@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal.component';
 import { RequestService } from '../../services/request.service';
 import { RequestCancelation } from '../../models/request';
+import { AccommodationService } from '../../services/accommodation.service';
 
 @Component({
   selector: 'app-host-request-reservation',
@@ -19,6 +20,7 @@ import { RequestCancelation } from '../../models/request';
 })
 export class HostRequestReservationComponent implements OnInit {
   readonly #requestService = inject(RequestService);
+  readonly #accommodationService = inject(AccommodationService);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
 
@@ -116,8 +118,8 @@ export class HostRequestReservationComponent implements OnInit {
       });
   }
 
-  protected onAutoApproveChange(value: boolean): void {
-    console.log('Auto-approve requests:', value);
-    // TODO: Save this setting via API
+  protected onAutoApproveChange(checked: boolean): void {
+    this.#accommodationService.toggleAutoReservation('3fa85f64-5717-4562-b3fc-2c963f66afa6') // todo
+    .subscribe(() => {});
   }
 }

@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { booking } from '../env/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AccommodationPagedResponse } from '../models/accommodation';
+import { Accommodation, AccommodationPagedResponse } from '../models/accommodation';
 
 @Injectable({
   providedIn: 'root'
@@ -13,5 +13,9 @@ export class AccommodationService {
 
   getAll(): Observable<AccommodationPagedResponse> {
     return this.#http.get<AccommodationPagedResponse>(`${this.apiUrl}`);
+  }
+
+  toggleAutoReservation(accommodationId: string): Observable<Accommodation> {
+    return this.#http.put<Accommodation>(`${this.apiUrl}/toggle/${accommodationId}`, {});
   }
 }
