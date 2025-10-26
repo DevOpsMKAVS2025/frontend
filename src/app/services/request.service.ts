@@ -21,4 +21,12 @@ export class RequestService {
   createRequest(requestData: Request): Observable<Request> {
     return this.#http.post<Request>(this.apiUrl, requestData);
   }
+
+  deleteRequest(requestId: string): Observable<void> {
+    return this.#http.delete<void>(`${this.apiUrl}/${requestId}`);
+  }
+
+  rejectReservation(reservationId: string): Observable<void> {
+    return this.#http.post<void>(`${this.apiUrl}/reject/${reservationId}`, {});
+  }
 }

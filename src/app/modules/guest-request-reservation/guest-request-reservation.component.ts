@@ -80,7 +80,15 @@ export class GuestRequestReservationComponent {
       .afterClosed()
       .subscribe((confirmed) => {
         if (confirmed) {
-          this.rows = this.rows.filter((r) => r !== row);
+          if(action === 'delete') {
+            this.#requestService.deleteRequest(row.id).subscribe(() => {
+              this.#getRequests();
+            });
+          } else if(action === 'reject') {
+            this.#requestService.rejectReservation(row.id).subscribe(() => {
+              this.#getReservations();
+            });
+          }
         }
       });
   }
@@ -95,7 +103,6 @@ export class GuestRequestReservationComponent {
         console.log('New Request Data:', result);
         this.#requestService.createRequest(result).subscribe(() => {
           this.#getRequests();
-          // this.rows = [...this.rows, result];
         });
       }
     });
