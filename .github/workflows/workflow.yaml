@@ -3,14 +3,14 @@ name: frontend workflow
 on:
   push:
     branches:
-      main
-      develop
+      - main
+      - develop
     tags:
     - 'v*.*.*'
   pull_request:
     branches:
-      main
-      develop
+      - main
+      - develop
 
 jobs:
   install:
