@@ -1,36 +1,25 @@
-.fill-remaining-space {
-  flex: 1 1 auto;
+.toolbar {
+  display: flex;
+  background-color: #1976d2;
+  padding: 0.5rem 1rem;
+  align-items: center;
 }
 
-.nav-button {
+.toolbar-link {
+  color: white;
   text-decoration: none;
-  color: var(--primary-text);
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-inline: 1rem;
-  font-size: 1rem;
+  margin-right: 1rem;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.toolbar-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
   cursor: pointer;
 }
 
-mat-toolbar {
-  background-color: var(--primary);
-}
-
-.nav-button:hover {
-  background-color: var(--primary-hover);
-}
-
-.title-button {
-  text-decoration: none;
-  color: var(--primary-text);
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-inline: 1rem;
-  font-size: 1.25rem;
-  font-weight: bold;
-  cursor: pointer;
+.toolbar-link:last-child {
+  margin-right: 0;
 }
