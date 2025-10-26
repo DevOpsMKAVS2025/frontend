@@ -1,0 +1,97 @@
+<div class="section">
+  <h2>Accommodations</h2>
+
+  <div *ngFor="let acc of accommodations" class="card">
+    <h3>{{ acc.accommodationName }}</h3>
+    <p>Average rating: {{ acc.average }}</p>
+
+    <div *ngIf="!hasMyRating(acc.ratings) && canRateAccommodationsIds.includes(acc.accommodationId)">
+        <input
+            type="number"
+            min="1"
+            max="5"
+            placeholder="Your rating"
+            [(ngModel)]="acc.newRatingValue"
+        />
+        <button (click)="addRating(acc, 'accommodation')">Add Rating</button>
+    </div>
+
+    <ul>
+      <li *ngFor="let rating of acc.ratings" class="rating-item">
+        <div>
+          <strong>Evaluation:</strong> {{ rating.evaluation }}<br>
+          <strong>Guest ID:</strong> {{ rating.guestId }}<br>
+          <strong>Time:</strong> {{ rating.givenAt }}
+        </div>
+
+        <div *ngIf="rating.guestId == guestId" class="actions">
+          <input type="number"
+                 [(ngModel)]="rating.evaluation"
+                 [disabled]="false"
+                 min="1"
+                 max="5"
+                 class="rating-input">
+          <button (click)="updateRating(rating)">Update</button>
+          <button (click)="deleteRating(rating.id)">Delete</button>
+        </div>
+
+        <div *ngIf="rating.guestId != guestId" class="actions">
+          <input type="number"
+                 [(ngModel)]="rating.evaluation"
+                 disabled
+                 class="rating-input">
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<hr>
+
+<div class="section">
+  <h2>Hosts</h2>
+
+  <div *ngFor="let host of hosts" class="card">
+    <h3>{{ host.hostUsername }}</h3>
+    <p>Average rating: {{ host.average }}</p>
+
+    <div *ngIf="!hasMyRating(host.ratings) && canRateHostIds.includes(host.hostId)">
+        <input
+            type="number"
+            min="1"
+            max="5"
+            placeholder="Your rating"
+            [(ngModel)]="host.newRatingValue"
+        />
+        <button (click)="addRating(host, 'host')">Add Rating</button>
+    </div>
+
+    <ul>
+      <li *ngFor="let rating of host.ratings" class="rating-item">
+        <div>
+          <strong>Evaluation:</strong> {{ rating.evaluation }}<br>
+          <strong>Guest ID:</strong> {{ rating.guestId }}<br>
+          <strong>Time:</strong> {{ rating.givenAt }}
+        </div>
+
+        <div *ngIf="rating.guestId == guestId" class="actions">
+          <input type="number"
+                 [(ngModel)]="rating.evaluation"
+                 [disabled]="false"
+                 min="1"
+                 max="5"
+                 class="rating-input">
+          <button (click)="updateRating(rating)">Update</button>
+          <button (click)="deleteRating(rating.id)">Delete</button>
+        </div>
+
+        <div *ngIf="rating.guestId != guestId" class="actions">
+          <input type="number"
+                 [(ngModel)]="rating.evaluation"
+                 disabled
+                 class="rating-input">
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
