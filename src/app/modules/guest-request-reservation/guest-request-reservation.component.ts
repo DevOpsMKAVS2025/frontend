@@ -7,15 +7,17 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal.component';
 import { CreateRequestModalComponent } from '../modal/create-request-modal/create-request-modal.component';
+import { RequestService } from '../../services/request.service';
 
 @Component({
   selector: 'app-guest-request-reservation',
   standalone: true,
   imports: [CommonModule, MatTableModule, MatButtonModule, MatTooltipModule],
   templateUrl: './guest-request-reservation.component.html',
-  styleUrl: './guest-request-reservation.component.css'
+  styleUrl: './guest-request-reservation.component.css',
 })
 export class GuestRequestReservationComponent {
+  readonly #requestService = inject(RequestService);
   readonly #route = inject(ActivatedRoute);
   readonly #dialog = inject(MatDialog);
 
@@ -25,7 +27,7 @@ export class GuestRequestReservationComponent {
     accommodation: 'Accommodation',
     startDate: 'Start Date',
     endDate: 'End Date',
-    guests: 'Guests',
+    guestNum: 'Guests',
   };
 
   rows: any[] = [];
@@ -44,11 +46,7 @@ export class GuestRequestReservationComponent {
     this.tableType = type === 'reservations' ? 'reservations' : 'requests';
 
     if (this.tableType === 'requests') {
-      this.rows = [
-        { accommodation: 'Apartment 1', startDate: '2025-10-11', endDate: '2025-10-15', guests: 2 },
-        { accommodation: 'Studio 2', startDate: '2025-11-01', endDate: '2025-11-05', guests: 1 },
-        { accommodation: 'Villa Sunset', startDate: '2025-12-20', endDate: '2025-12-25', guests: 4 },
-      ];
+      this.#getRequests();
       this.actions = [{ name: 'delete', label: 'Delete', color: 'warn' }];
     } else {
       this.rows = [
@@ -57,6 +55,17 @@ export class GuestRequestReservationComponent {
       ];
       this.actions = [{ name: 'reject', label: 'Reject', color: 'warn' }];
     }
+  }
+
+  #getRequests(): void {
+    this.#requestService.getAllGuestRequests('3fa85f64-5717-4562-b3fc-2c963f66afa6')
+    .subscribe((data: Request[]) => {
+      this.rows = data;
+    });
+  }
+
+  #getReservations(): void {
+    // Placeholder for future implementation to fetch reservations from a service
   }
 
   protected onAction(action: string, row: any): void {

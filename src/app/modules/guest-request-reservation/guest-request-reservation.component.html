@@ -15,7 +15,7 @@
     <ng-container [matColumnDef]="col">
       <th mat-header-cell *matHeaderCellDef>{{ columnHeaders[col] }}</th>
       <td mat-cell *matCellDef="let element">
-        {{ element[col] }}
+        {{ col === 'startDate' || col === 'endDate' ? (element[col] | date:'yyyy-MM-dd') : element[col] }}
       </td>
     </ng-container>
   }
