@@ -12,3 +12,23 @@ export interface UserData{
   userRole: UserRole,
   username: string,
 }
+
+export interface AccessTokenResponse {
+  accessToken: string
+}
+export interface Principal {
+  id: string;
+  role: string;
+  email: string;
+  username: string;
+}
+
+export interface SignupData {
+  firstName: string;
+  lastName: string;
+  address: string;
+  email: string;
+  password: string;
+  username: string;
+  type: string;
+}
