@@ -6,6 +6,7 @@ import { LoginPageComponent } from './modules/login-page/login-page.component';
 import { SignupPageComponent } from './modules/signup-page/signup-page.component';
 import { AccountPageComponent } from './modules/account-page/account-page.component';
 import { RatingComponent } from './modules/rating/rating.component';
+import { SearchAccommodationComponent } from './modules/accommodation/search-accommodation/search-accommodation.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
@@ -14,5 +15,6 @@ export const routes: Routes = [
   { path: 'guest/:type', component: GuestRequestReservationComponent },
   { path: 'host/:type', component: HostRequestReservationComponent },
   { path: 'rating', component: RatingComponent },
+  { path: 'accommodations', component: SearchAccommodationComponent},
   { path: '**', component: LandingPageComponent },
 ];

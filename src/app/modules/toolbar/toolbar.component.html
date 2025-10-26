@@ -1,23 +1,26 @@
 <mat-toolbar class="toolbar">
   <a class="title-button" href="/">Booking</a>
-
   <div class="toolbar-links">
     @if(userType === 'Guest') {
       <a class="toolbar-link" routerLink="/home">Home</a>
       <a class="toolbar-link" routerLink="/account">Account</a>
+      <a class="toolbar-link" href="/accommodations">Accommodations</a>
       <a class="toolbar-link" routerLink="/rating">Rating</a>
       <a class="toolbar-link" href="/guest/requests">Requests</a>
       <a class="toolbar-link" href="/guest/reservations">Reservations</a>
       <a class="toolbar-link" (click)="logout()">Logout</a>
     } @else if(userType === 'Host') {
-    <a class="toolbar-link" routerLink="/home">Home</a>
-    <a class="toolbar-link" routerLink="/account">Account</a>
-    <a class="toolbar-link" href="/host/requests">Requests</a>
-    <a class="toolbar-link" href="/host/reservations">Reservations</a>
-    <a class="toolbar-link" (click)="logout()">Logout</a>
+      <a class="toolbar-link" routerLink="/home">Home</a>
+      <a class="toolbar-link" routerLink="/account">Account</a>
+      <a class="toolbar-link" href="/accommodations">Accommodations</a>
+      <a class="toolbar-link" href="/accommodations/host">My Accommodations</a>
+      <a class="toolbar-link" href="/host/requests">Requests</a>
+      <a class="toolbar-link" href="/host/reservations">Reservations</a>
+      <a class="toolbar-link" (click)="logout()">Logout</a>
     } @else {
-    <a class="toolbar-link" routerLink="/login">Login</a>
-    <a class="toolbar-link" routerLink="/sign-up">Sign Up</a>
+      <a class="toolbar-link" href="/accommodations">Accommodations</a>
+      <a class="toolbar-link" routerLink="/login">Login</a>
+      <a class="toolbar-link" routerLink="/sign-up">Sign Up</a>
     }
   </div>
 </mat-toolbar>
