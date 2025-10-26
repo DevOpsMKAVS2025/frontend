@@ -1,0 +1,60 @@
+<h2 mat-dialog-title>Create Accommodation</h2>
+<mat-dialog-content [formGroup]="form">
+    <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Location</mat-label>
+        <input matInput formControlName="location" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Price</mat-label>
+        <input matInput type="number" formControlName="globalPrice" />
+    </mat-form-field>
+
+    <mat-checkbox matInput formControlName="isAutoReservation">Auto-Reservation</mat-checkbox>
+
+    <div class="guest-range">
+        <mat-form-field appearance="fill">
+            <mat-label>Min Guests</mat-label>
+            <input matInput type="number" formControlName="minGuestNumber" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Max Guests</mat-label>
+            <input matInput type="number" formControlName="maxGuestNumber" />
+        </mat-form-field>
+    </div>
+
+    <label>Conveniences</label>
+    <div class="conveniences">
+        <mat-checkbox *ngFor="let c of conveniences" (change)="toggleConvenience($event, c.value)">
+            {{ c.name }}
+        </mat-checkbox>
+    </div>
+
+    <div class="photos">
+        <label>Upload Photos</label>
+        <input type="file" (change)="onFilesSelected($event)" multiple />
+
+        <div *ngIf="photos.length">
+            <p>Added photos:</p>
+            <div class="photo-previews">
+                <div *ngFor="let p of photos" class="photo-item">
+                    <img [src]="p.data" alt="{{p.name}}" />
+                    <p>{{ p.name }}</p>
+                    <button mat-icon-button color="warn" (click)="removePhoto(p)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="cancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="save()">Create</button>
+</mat-dialog-actions>

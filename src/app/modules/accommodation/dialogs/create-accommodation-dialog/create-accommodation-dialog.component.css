@@ -1,0 +1,61 @@
+/* Full width for inputs */
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* Guest range fields side by side */
+.guest-range {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.guest-range mat-form-field {
+  flex: 1;
+}
+
+/* Convenience checkboxes */
+.conveniences {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Photos section */
+.photos {
+  margin-bottom: 16px;
+}
+
+.photos mat-form-field {
+  width: 70%;
+}
+
+.photos button {
+  margin-top: 24px;
+  margin-left: 8px;
+}
+
+/* Availability and price buttons */
+.availability-price {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+/* Added info below buttons */
+.availability-price div {
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* Dialog actions spacing */
+mat-dialog-actions {
+  margin-top: 16px;
+}
+
+mat-dialog-actions button {
+  min-width: 100px;
+}

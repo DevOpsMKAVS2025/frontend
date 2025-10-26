@@ -4,6 +4,8 @@ import { FormBuilder } from '@angular/forms';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateAccommodationDialogComponent } from '../dialogs/create-accommodation-dialog/create-accommodation-dialog.component';
 
 @Component({
   selector: 'app-host-accommodation',
@@ -19,7 +21,7 @@ export class HostAccommodationComponent implements OnInit{
   
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.accommodations = [  // TODO: call here service and then backend
@@ -56,7 +58,18 @@ export class HostAccommodationComponent implements OnInit{
   }
 
   addAccommodation() {
-    // Open dialog / form to add new accommodation
+     const dialogRef = this.dialog.open(CreateAccommodationDialogComponent, {
+    width: '600px',
+    data: {}
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      console.log('New Accommodation:', result);
+      this.accommodations.push(result);
+      this.dataSource.data = this.accommodations;
+    }
+  });
   }
 
   deleteAccommodation(a: Accommodation) {
