@@ -6,6 +6,8 @@ import { Accommodation } from '../../../models/accommodation';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { AddAvailabilityDialogComponent } from '../dialogs/add-availability-dialog/add-availability-dialog.component';
+import { AddPriceDialogComponent } from '../dialogs/add-price-dialog/add-price-dialog.component';
 
 @Component({
   selector: 'app-accommodation-details',
@@ -43,17 +45,17 @@ export class AccommodationDetailsComponent implements OnInit {
   }
 
   addAvailability() {
-    // const dialogRef = this.dialog.open(AddAvailabilityDialogComponent, { width: '400px' });
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) this.accommodation.availability.push(result);
-    // });
+    const dialogRef = this.dialog.open(AddAvailabilityDialogComponent, { width: '400px' });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) this.accommodation.availability.push(result);
+    });
   }
 
   addPrice() {
-    // const dialogRef = this.dialog.open(AddPriceDialogComponent, { width: '400px' });
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) this.accommodation.prices.push(result);
-    // });
+    const dialogRef = this.dialog.open(AddPriceDialogComponent, { width: '400px' });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) this.accommodation.prices.push(result);
+    });
   }
 
 }
