@@ -55,14 +55,14 @@ export class GuestRequestReservationComponent {
   }
 
   #getRequests(): void {
-    this.#requestService.getAllGuestRequests('3fa85f64-5717-4562-b3fc-2c963f66afa6')
+    this.#requestService.getAllGuestRequests('3fa85f64-5717-4562-b3fc-2c963f66afa6') // todo
     .subscribe((data: Request[]) => {
       this.rows = data;
     });
   }
 
   #getReservations(): void {
-    this.#requestService.getAllGuestReservations('3fa85f64-5717-4562-b3fc-2c963f66afa6')
+    this.#requestService.getAllGuestReservations('3fa85f64-5717-4562-b3fc-2c963f66afa6') // todo
     .subscribe((data: Request[]) => {
       this.rows = data;
     });
@@ -92,7 +92,11 @@ export class GuestRequestReservationComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.rows = [...this.rows, result];
+        console.log('New Request Data:', result);
+        this.#requestService.createRequest(result).subscribe(() => {
+          this.#getRequests();
+          // this.rows = [...this.rows, result];
+        });
       }
     });
   }

@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class RequestService {
-
   private apiUrl = `${booking.apiHost}request`;
   readonly #http = inject(HttpClient);
 
@@ -17,5 +16,9 @@ export class RequestService {
 
   getAllGuestReservations(guestId: string): Observable<Request[]> {
     return this.#http.get<Request[]>(`${this.apiUrl}/accepted/guest/${guestId}`);
+  }
+
+  createRequest(requestData: Request): Observable<Request> {
+    return this.#http.post<Request>(this.apiUrl, requestData);
   }
 }
