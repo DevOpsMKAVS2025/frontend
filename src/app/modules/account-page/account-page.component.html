@@ -1,0 +1,50 @@
+<div class="profile-container">
+  <h2>Profile</h2>
+
+  <!-- Username (not editable) -->
+  <div class="profile-field">
+    <label>Username:</label>
+    <span>{{ user.username }}</span>
+  </div>
+
+  <!-- Email (not editable) -->
+  <div class="profile-field">
+    <label>Email:</label>
+    <span>{{ user.email }}</span>
+  </div>
+
+  <!-- First Name -->
+  <div class="profile-field">
+    <label>First Name:</label>
+    <input *ngIf="editing.firstName" [(ngModel)]="user.firstName" />
+    <span *ngIf="!editing.firstName">{{ user.firstName }}</span>
+    <button *ngIf="!editing.firstName" (click)="edit('firstName')">Edit</button>
+    <button *ngIf="editing.firstName" (click)="confirm('firstName')">Confirm</button>
+  </div>
+
+  <!-- Last Name -->
+  <div class="profile-field">
+    <label>Last Name:</label>
+    <input *ngIf="editing.lastName" [(ngModel)]="user.lastName" />
+    <span *ngIf="!editing.lastName">{{ user.lastName }}</span>
+    <button *ngIf="!editing.lastName" (click)="edit('lastName')">Edit</button>
+    <button *ngIf="editing.lastName" (click)="confirm('lastName')">Confirm</button>
+  </div>
+
+  <!-- Address -->
+  <div class="profile-field">
+    <label>Address:</label>
+    <input *ngIf="editing.address" [(ngModel)]="user.address" />
+    <span *ngIf="!editing.address">{{ user.address }}</span>
+    <button *ngIf="!editing.address" (click)="edit('address')">Edit</button>
+    <button *ngIf="editing.address" (click)="confirm('address')">Confirm</button>
+  </div>
+
+
+  <!-- Password (input only) -->
+  <div class="profile-field">
+    <label>Password:</label>
+    <input type="password" [(ngModel)]="user.password" placeholder="Enter new password" />
+    <button (click)="confirm('password')">Confirm</button>
+  </div>
+</div>
