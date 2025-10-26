@@ -30,7 +30,7 @@ export class GuestRequestReservationComponent {
     guestNum: 'Guests',
   };
 
-  rows: any[] = [];
+  rows: Request[] = [];
   actions: { name: string; label: string; color?: string }[] = [];
 
   get columns() {
@@ -49,10 +49,7 @@ export class GuestRequestReservationComponent {
       this.#getRequests();
       this.actions = [{ name: 'delete', label: 'Delete', color: 'warn' }];
     } else {
-      this.rows = [
-        { accommodation: 'Villa Sunset', startDate: '2025-12-20', endDate: '2025-12-25', guests: 4 },
-        { accommodation: 'Studio 3', startDate: '2025-11-05', endDate: '2025-11-10', guests: 1 },
-      ];
+      this.#getReservations();
       this.actions = [{ name: 'reject', label: 'Reject', color: 'warn' }];
     }
   }
@@ -65,7 +62,10 @@ export class GuestRequestReservationComponent {
   }
 
   #getReservations(): void {
-    // Placeholder for future implementation to fetch reservations from a service
+    this.#requestService.getAllGuestReservations('3fa85f64-5717-4562-b3fc-2c963f66afa6')
+    .subscribe((data: Request[]) => {
+      this.rows = data;
+    });
   }
 
   protected onAction(action: string, row: any): void {

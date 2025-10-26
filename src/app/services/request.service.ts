@@ -14,4 +14,8 @@ export class RequestService {
   getAllGuestRequests(guestId: string): Observable<Request[]> {
     return this.#http.get<Request[]>(`${this.apiUrl}/guest/${guestId}`);
   }
+
+  getAllGuestReservations(guestId: string): Observable<Request[]> {
+    return this.#http.get<Request[]>(`${this.apiUrl}/accepted/guest/${guestId}`);
+  }
 }
