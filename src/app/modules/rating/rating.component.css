@@ -1,0 +1,27 @@
+.section {
+  margin-bottom: 2rem;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.rating-item {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem;
+  background: #f9f9f9;
+  border-radius: 5px;
+}
+
+.actions {
+  margin-top: 0.5rem;
+}
+
+.rating-input {
+  width: 60px;
+  margin-right: 8px;
+}
