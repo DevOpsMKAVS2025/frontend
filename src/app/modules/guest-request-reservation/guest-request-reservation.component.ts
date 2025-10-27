@@ -7,17 +7,21 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal.component';
 import { CreateRequestModalComponent } from '../modal/create-request-modal/create-request-modal.component';
+import { RequestService } from '../../services/request.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-guest-request-reservation',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatTooltipModule],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatTooltipModule, MatSnackBarModule],
   templateUrl: './guest-request-reservation.component.html',
-  styleUrl: './guest-request-reservation.component.css'
+  styleUrl: './guest-request-reservation.component.css',
 })
 export class GuestRequestReservationComponent {
+  readonly #requestService = inject(RequestService);
   readonly #route = inject(ActivatedRoute);
   readonly #dialog = inject(MatDialog);
+  readonly #snackBar = inject(MatSnackBar);
 
   tableType: 'requests' | 'reservations' = 'requests';
 
@@ -25,10 +29,10 @@ export class GuestRequestReservationComponent {
     accommodation: 'Accommodation',
     startDate: 'Start Date',
     endDate: 'End Date',
-    guests: 'Guests',
+    guestNum: 'Guests',
   };
 
-  rows: any[] = [];
+  rows: Request[] = [];
   actions: { name: string; label: string; color?: string }[] = [];
 
   get columns() {
@@ -44,19 +48,26 @@ export class GuestRequestReservationComponent {
     this.tableType = type === 'reservations' ? 'reservations' : 'requests';
 
     if (this.tableType === 'requests') {
-      this.rows = [
-        { accommodation: 'Apartment 1', startDate: '2025-10-11', endDate: '2025-10-15', guests: 2 },
-        { accommodation: 'Studio 2', startDate: '2025-11-01', endDate: '2025-11-05', guests: 1 },
-        { accommodation: 'Villa Sunset', startDate: '2025-12-20', endDate: '2025-12-25', guests: 4 },
-      ];
+      this.#getRequests();
       this.actions = [{ name: 'delete', label: 'Delete', color: 'warn' }];
     } else {
-      this.rows = [
-        { accommodation: 'Villa Sunset', startDate: '2025-12-20', endDate: '2025-12-25', guests: 4 },
-        { accommodation: 'Studio 3', startDate: '2025-11-05', endDate: '2025-11-10', guests: 1 },
-      ];
+      this.#getReservations();
       this.actions = [{ name: 'reject', label: 'Reject', color: 'warn' }];
     }
+  }
+
+  #getRequests(): void {
+    this.#requestService.getAllGuestRequests('3fa85f64-5717-4562-b3fc-2c963f66afa6') // todo
+    .subscribe((data: Request[]) => {
+      this.rows = data;
+    });
+  }
+
+  #getReservations(): void {
+    this.#requestService.getAllGuestReservations('3fa85f64-5717-4562-b3fc-2c963f66afa6') // todo
+    .subscribe((data: Request[]) => {
+      this.rows = data;
+    });
   }
 
   protected onAction(action: string, row: any): void {
@@ -71,7 +82,15 @@ export class GuestRequestReservationComponent {
       .afterClosed()
       .subscribe((confirmed) => {
         if (confirmed) {
-          this.rows = this.rows.filter((r) => r !== row);
+          if(action === 'delete') {
+            this.#requestService.deleteRequest(row.id).subscribe(() => {
+              this.#getRequests();
+            });
+          } else if(action === 'reject') {
+            this.#requestService.rejectReservation(row.id).subscribe(() => {
+              this.#getReservations();
+            });
+          }
         }
       });
   }
@@ -83,7 +102,22 @@ export class GuestRequestReservationComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.rows = [...this.rows, result];
+        this.#requestService.createRequest(result).subscribe({
+          next: () => {
+            this.#getRequests();
+          },
+          error: (err) => {
+            if (err.status === 500) {
+              const message = err.error?.detail || 'Unexpected error';
+              const match = message.match(/'(.*?)'/);
+              const textToShow = match ? match[1] : message;
+
+              this.#snackBar.open(textToShow, 'OK', {
+                duration: 3000
+              });
+            }
+          }
+        });
       }
     });
   }

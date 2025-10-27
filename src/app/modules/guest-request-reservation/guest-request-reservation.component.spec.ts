@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GuestRequestReservationComponent } from './guest-request-reservation.component';
+import { provideHttpClient } from '@angular/common/http';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 
 describe('GuestRequestReservationComponent', () => {
@@ -11,6 +12,7 @@ describe('GuestRequestReservationComponent', () => {
     await TestBed.configureTestingModule({
       imports: [GuestRequestReservationComponent],
       providers: [
+        provideHttpClient(),
         {
           provide: ActivatedRoute,
           useValue: {

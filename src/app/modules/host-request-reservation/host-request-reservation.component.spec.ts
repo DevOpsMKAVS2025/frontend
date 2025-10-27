@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HostRequestReservationComponent } from './host-request-reservation.component';
+import { provideHttpClient } from '@angular/common/http';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 
 describe('HostRequestReservationComponent', () => {
@@ -11,6 +12,7 @@ describe('HostRequestReservationComponent', () => {
     await TestBed.configureTestingModule({
       imports: [HostRequestReservationComponent],
       providers: [
+        provideHttpClient(),
         {
           provide: ActivatedRoute,
           useValue: {

@@ -1,14 +1,27 @@
+.title-button {
+  color: white;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
 .toolbar {
   display: flex;
   background-color: #1976d2;
   padding: 0.5rem 1rem;
   align-items: center;
+  justify-content: space-between;
+}
+
+
+.toolbar-links {
+  display: flex;
+  gap: 1rem;
 }
 
 .toolbar-link {
   color: white;
   text-decoration: none;
-  margin-right: 1rem;
   font-weight: 500;
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
