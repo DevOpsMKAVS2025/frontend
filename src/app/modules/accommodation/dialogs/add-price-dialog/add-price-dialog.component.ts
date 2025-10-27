@@ -6,6 +6,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { Accommodation, ConvenieceType, Price, PriceType } from '../../../../models/accommodation';
 
 @Component({
   selector: 'app-add-price-dialog',
@@ -39,10 +40,13 @@ export class AddPriceDialogComponent {
   save() {
     if (this.form.invalid) return;
 
-    const price = {
-      start: this.form.value.start,
-      end: this.form.value.end,
+    const price: Price = {
+      duration: {
+        from: this.form.value.start, 
+        to: this.form.value.end,
+      },
       amount: this.form.value.amount,
+      accommodationId: " "
     };
 
     this.dialogRef.close(price);
