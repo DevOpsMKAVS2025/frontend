@@ -7,20 +7,20 @@ export interface Duration {
     to: string
 }
 export enum ConvenieceType {
-  WIFI = 'WIFI',
-  KITCHEN = 'KITCHEN',
-  AIR_CONDITION = 'AIR_CONDITION',
-  FREE_PARKING = 'FREE_PARKING'
+  WIFI = 0,
+  KITCHEN = 1,
+  AIR_CONDITION = 2,
+  FREE_PARKING = 3
 }
 
 export enum PriceType {
-  PER_GUEST = 'PER_GUEST',
-  PER_UNIT = 'PER_UNIT'
+  PER_GUEST = 0,
+  PER_UNIT = 1
 }
 
 export interface DateRange {
-  start: string; // ISO date yyyy-mm-dd
-  end: string;   // ISO date yyyy-mm-dd
+  from: string; // ISO date yyyy-mm-dd
+  to: string;   // ISO date yyyy-mm-dd
 }
 
 export interface Availability {
@@ -34,7 +34,6 @@ export interface Price {
   accommodationId?: string;
   amount: number;
   duration: DateRange;
-  priceType: PriceType;
 }
 
 export interface Accommodation {
@@ -47,7 +46,21 @@ export interface Accommodation {
   maxGuestNumber: number;
   availability: Availability[];
   prices: Price[];
+  priceType: PriceType;
   globalPrice: number; // base price
   isAutoReservation?: boolean;
   ownerId?: string;
+}
+export interface AccommodationAndPrice {
+  id: string; 
+  name: string;
+  location: string;
+  conveniences: ConvenieceType[];
+  photos: string[];
+  minGuestNumber: number;
+  maxGuestNumber: number;
+  totalPrice: number;
+  isAutoReservation: boolean;
+  pricePerPersonOrNight: number;
+  priceType: PriceType;
 }

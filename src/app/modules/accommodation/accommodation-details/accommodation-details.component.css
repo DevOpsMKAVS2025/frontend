@@ -1,33 +1,48 @@
-.details-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
 }
 
-.photo-section {
-  margin-bottom: 20px;
+.half-width {
+  width: 48%;
+  margin-bottom: 16px;
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.button-row {
+  margin-top: 16px;
+  text-align: right;
+}
+
+.buttons {
+  display: flex;
+  gap: 16px;
+  margin: 24px 0;
 }
 
 .photo-previews {
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
+  gap: 12px;
 }
 
 .photo-previews img {
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 80px;
   object-fit: cover;
   border-radius: 4px;
 }
-
-.buttons {
-  margin: 20px 0;
-  display: flex;
-  gap: 10px;
+.conveniences-section {
+  margin-bottom: 16px;
 }
 
-table {
-  width: 100%;
-  margin-bottom: 20px;
+.conveniences {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }

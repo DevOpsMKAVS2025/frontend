@@ -7,6 +7,8 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateAccommodationDialogComponent } from '../dialogs/create-accommodation-dialog/create-accommodation-dialog.component';
 import { Router } from '@angular/router';
+import { AccommodationService } from '../../../services/accommodation-service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-host-accommodation',
@@ -22,40 +24,19 @@ export class HostAccommodationComponent implements OnInit {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private fb: FormBuilder, private dialog: MatDialog, private router: Router) { }
+  constructor(private fb: FormBuilder, private dialog: MatDialog, private router: Router, private service: AccommodationService) { }
 
   ngOnInit(): void {
-    this.accommodations = [  // TODO: call here service and then backend
-      {
-        id: '1',
-        name: 'Seaside Apartment',
-        location: 'Budva',
-        minGuestNumber: 1,
-        maxGuestNumber: 4,
-        conveniences: [ConvenieceType.AIR_CONDITION, ConvenieceType.KITCHEN, ConvenieceType.WIFI],
-        prices: [],
-        availability: [],
-        globalPrice: 600,
-        photos: [''],
+    this.service.getPaged().subscribe({
+      next: (data) => {
+        this.accommodations = data.results; 
+        this.dataSource = new MatTableDataSource(this.accommodations); 
+        this.dataSource.sort = this.sort; 
       },
-      {
-        id: '2',
-        name: 'Mountain Cabin',
-        location: 'Kopaonik',
-        minGuestNumber: 2,
-        maxGuestNumber: 6,
-        conveniences: [ConvenieceType.WIFI, ConvenieceType.FREE_PARKING],
-        prices: [],
-        availability: [],
-        globalPrice: 400,
-        photos: [''],
+      error: (err) => {
+        console.error('Error fetching accommodations:', err);
       }
-    ];
-    this.dataSource = new MatTableDataSource(this.accommodations);
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
+    });
   }
 
   addAccommodation() {
@@ -64,24 +45,53 @@ export class HostAccommodationComponent implements OnInit {
       data: {}
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        console.log('New Accommodation:', result);
-        this.accommodations.push(result);
-        this.dataSource.data = this.accommodations;
+   dialogRef.afterClosed().subscribe(newAccommodationData => {
+      if (newAccommodationData) {
+        //TODO: ADD OWNER ID
+      this.service.create(newAccommodationData) 
+        .pipe(take(1))
+        .subscribe({
+          next: (createdAccommodation: Accommodation) => {
+            this.accommodations.push(createdAccommodation);
+            this.accommodations = [...this.accommodations]; 
+            this.dataSource.data = this.accommodations;
+          },
+          error: (err) => {
+            console.error('Error while adding accommodation:', err);
+          }
+        });
       }
     });
   }
 
   deleteAccommodation(a: Accommodation) {
-    this.accommodations = this.accommodations.filter(x => x.id !== a.id);  // TODO: call service
+    this.service.delete(a.id!) 
+        .pipe(take(1))
+        .subscribe({
+          next: (createdAccommodation: Accommodation) => {
+            this.accommodations = this.accommodations.filter(acc => acc.id !== a.id);
+            this.accommodations = [...this.accommodations]; 
+            this.dataSource.data = this.accommodations;
+          },
+          error: (err) => {
+            console.error('Error while deleting accommodation:', err);
+          }
+        });
   }
 
-  showConveniences(a: Accommodation) {
-    return a.conveniences.join(', ');
+  showConveniences(acc: Accommodation): string {
+    if (!acc.conveniences || acc.conveniences.length === 0) return '-';
+    return acc.conveniences.map(c => this.ConvenieceTypeMap[c]).join(', ');
   }
 
   openAccommodationDetails(accommodation: any) {
-    this.router.navigate(['/accommodation-details', accommodation.id]);  // TODO: check if this is actually accommodation id
+    this.router.navigate(['/accommodation-details', accommodation.id]);  
   }
+  
+  ConvenieceTypeMap: { [key: number]: string } = {
+    [ConvenieceType.WIFI]: 'Wi-Fi',
+    [ConvenieceType.KITCHEN]: 'Kitchen',
+    [ConvenieceType.AIR_CONDITION]: 'Air Condition',
+    [ConvenieceType.FREE_PARKING]: 'Free Parking'
+  };
 }
