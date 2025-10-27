@@ -50,7 +50,7 @@ export class UserService {
   }
 
   loginUser(credentials: LoginCredentials): Observable<AccessTokenResponse> {
-    return this.http.post<AccessTokenResponse>(`${environment.apiHost}auth/login`, credentials);
+    return this.http.post<AccessTokenResponse>(`${environment.authService}auth/login`, credentials);
   }
 
   logOut() {
@@ -60,19 +60,19 @@ export class UserService {
   }
 
   signUp(signupData: SignupData): Observable<any> {
-    return this.http.post(`${environment.apiHost}account`, signupData);
+    return this.http.post(`${environment.authService}account`, signupData);
   }
 
   updateAccountInformation(data: {value: string, property: string}): Observable<any> {
-    return this.http.put(`${environment.apiHost}account`, data);
+    return this.http.put(`${environment.authService}account`, data);
   }
 
   getAccountInformation(): Observable<any> {
-    return this.http.get(`${environment.apiHost}account`);
+    return this.http.get(`${environment.authService}account`);
   }
 
   deleteAccount(): Observable<any> {
-    return this.http.delete(`${environment.apiHost}account`);
+    return this.http.delete(`${environment.authService}account`);
   }
 
 }
