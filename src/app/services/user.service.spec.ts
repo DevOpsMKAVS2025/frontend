@@ -1,21 +1,22 @@
 import { TestBed } from '@angular/core/testing';
-import { UserService } from './user.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ToolbarComponent} from "../modules/toolbar/toolbar.component";
 import { RouterTestingModule } from '@angular/router/testing';
-import { JwtInterceptor } from '@auth0/angular-jwt';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-describe('UserService', () => {
-  let service: UserService;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
-      providers: [UserService, JwtInterceptor],
-    });
-    service = TestBed.inject(UserService); // ✅ assign service
+describe('ToolbarComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [
+        ToolbarComponent,
+        RouterTestingModule,
+        HttpClientTestingModule // <- Add this
+      ],
+    }).compileComponents();
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
+  it('should create', () => {
+    const fixture = TestBed.createComponent(ToolbarComponent);
+    const component = fixture.componentInstance;
+    expect(component).toBeTruthy();
   });
 });
