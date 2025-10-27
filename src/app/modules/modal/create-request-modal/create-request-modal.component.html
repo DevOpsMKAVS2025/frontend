@@ -6,7 +6,7 @@
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Accommodation</mat-label>
       <mat-select [(ngModel)]="selectedAccommodation" name="accommodation" required>
-        @for (acc of accommodations; track acc) {
+        @for (acc of accommodationNames; track acc) {
           <mat-option [value]="acc">{{ acc }}</mat-option>
         }
       </mat-select>

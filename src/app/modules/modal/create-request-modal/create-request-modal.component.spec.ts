@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreateRequestModalComponent } from './create-request-modal.component';
+import { provideHttpClient } from '@angular/common/http';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -12,8 +13,10 @@ describe('CreateRequestModalComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         CreateRequestModalComponent,
-        BrowserAnimationsModule,],
+        BrowserAnimationsModule,
+      ],
       providers: [
+        provideHttpClient(),
         { provide: MatDialogRef, useValue: {} },
         { provide: MAT_DIALOG_DATA, useValue: {} }
       ]
