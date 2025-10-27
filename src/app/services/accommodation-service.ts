@@ -1,101 +1,83 @@
-import { Observable, of } from "rxjs";
-import { Accommodation, ConvenieceType, PriceType } from "../models/accommodation";
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Accommodation, Availability, Price } from '../models/accommodation';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root'
 })
 export class AccommodationService {
-     private data: Accommodation[] = [
-    {
-      id: '1',
-      name: 'Sunny Beach House',
-      location: 'Novi Sad',
-      conveniences: [ConvenieceType.WIFI, ConvenieceType.KITCHEN, ConvenieceType.FREE_PARKING],
-      photos: [],
-      minGuestNumber: 1,
-      maxGuestNumber: 6,
-      availability: [
-        { id: 'a1', duration: { start: '2025-06-01', end: '2025-09-30' } },
-        { id: 'a2', duration: { start: '2025-11-01', end: '2025-12-31' } }
-      ],
-      prices: [
-        { id: 'p1', amount: 80, duration: { start: '2025-06-01', end: '2025-08-31' }, priceType: PriceType.PER_UNIT },
-        { id: 'p2', amount: 90, duration: { start: '2025-08-15', end: '2025-08-20' }, priceType: PriceType.PER_UNIT }
-      ],
-      globalPrice: 60,
-      isAutoReservation: true,
-      ownerId: 'host1'
-    },
-    {
-      id: '2',
-      name: 'City Center Apartment',
-      location: 'Belgrade',
-      conveniences: [ConvenieceType.WIFI, ConvenieceType.AIR_CONDITION],
-      photos: [],
-      minGuestNumber: 1,
-      maxGuestNumber: 3,
-      availability: [
-        { id: 'b1', duration: { start: '2025-01-01', end: '2026-12-31' } }
-      ],
-      prices: [
-        { id: 'p3', amount: 30, duration: { start: '2025-12-20', end: '2025-12-31' }, priceType: PriceType.PER_GUEST }
-      ],
-      globalPrice: 25,
-      ownerId: 'host2'
-    },
-    {
-      id: '3',
-      name: 'Quiet Mountain Cabin',
-      location: 'Kopaonik',
-      conveniences: [ConvenieceType.KITCHEN, ConvenieceType.FREE_PARKING],
-      photos: [],
-      minGuestNumber: 2,
-      maxGuestNumber: 5,
-      availability: [
-        { id: 'c1', duration: { start: '2025-01-01', end: '2025-03-31' } },
-        { id: 'c2', duration: { start: '2025-12-01', end: '2025-12-31' } }
-      ],
-      prices: [
-        { id: 'p4', amount: 40, duration: { start: '2025-12-01', end: '2025-12-31' }, priceType: PriceType.PER_UNIT }
-      ],
-      globalPrice: 35,
-      ownerId: 'host3'
-    }
-  ];
+  private apiUrl = 'https://localhost:7056/api/accommodation';
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Accommodation[]> {
-    return of(this.data);  // TODO: call backend API here
+  // ====== ACCOMMODATION ======
+
+  getPaged(page: number = 1, pageSize: number = 10): Observable<any> {
+    const params = new HttpParams()
+      .set('page', page)
+      .set('pageSize', pageSize);
+    return this.http.get(`${this.apiUrl}`, { params });
   }
 
-  getAccommodationById(id: string): Observable<Accommodation>{
-    return  of({
-      id: '3',
-      name: 'Quiet Mountain Cabin',
-      location: 'Kopaonik',
-      conveniences: [ConvenieceType.KITCHEN, ConvenieceType.FREE_PARKING],
-      photos: [],
-      minGuestNumber: 2,
-      maxGuestNumber: 5,
-      availability: [
-        { id: 'c1', duration: { start: '2025-01-01', end: '2025-03-31' } },
-        { id: 'c2', duration: { start: '2025-12-01', end: '2025-12-31' } }
-      ],
-      prices: [
-        { id: 'p4', amount: 40, duration: { start: '2025-12-01', end: '2025-12-31' }, priceType: PriceType.PER_UNIT }
-      ],
-      globalPrice: 35,
-      ownerId: 'host3'
-    });
+  getById(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}`);
   }
 
-  search(location: string, guests: number, start: string, end: string) : Observable<Accommodation[]> {
-    return of(this.data);  // TODO: call filter API here
+  create(accommodation: Accommodation): Observable<any> {
+    return this.http.post(`${this.apiUrl}`, accommodation);
   }
 
-  calculatePrices() {
-    return 100;
+  update(accommodation: Accommodation): Observable<any> {
+    return this.http.put(`${this.apiUrl}`, accommodation);
+  }
+
+  delete(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  // ====== PRICE ======
+
+  createPrice(price: Price): Observable<any> {
+    return this.http.post(`${this.apiUrl}/price`, price);
+  }
+
+  getPrice(accommodationId: string, priceId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/price/${accommodationId}/${priceId}`);
+  }
+
+  updatePrice(price: Price): Observable<any> {
+    return this.http.put(`${this.apiUrl}/price`, price);
+  }
+
+  // ====== AVAILABILITY ======
+
+  createAvailability(availability: Availability): Observable<any> {
+    return this.http.post(`${this.apiUrl}/availability`, availability);
+  }
+
+  getAvailability(accommodationId: string, availabilityId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/availability/${accommodationId}/${availabilityId}`);
+  }
+
+  updateAvailability(availability: Availability): Observable<any> {
+    return this.http.put(`${this.apiUrl}/availability`, availability);
+  }
+
+  // ====== FILTER ======
+
+  getByFilters(
+    location?: string,
+    guestNumber?: number,
+    from?: Date,
+    to?: Date
+  ): Observable<any> {
+    let params = new HttpParams();
+    if (location) params = params.set('location', location);
+    if (guestNumber) params = params.set('guestNumber', guestNumber);
+    if (from) params = params.set('from', from.toISOString());
+    if (to) params = params.set('to', to.toISOString());
+
+    return this.http.get(`${this.apiUrl}/filter`, { params });
   }
 }

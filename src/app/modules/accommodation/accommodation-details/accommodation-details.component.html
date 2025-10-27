@@ -1,57 +1,109 @@
 <div *ngIf="accommodation" class="details-container">
-  <h2>{{ accommodation.name }}</h2>
-  <p><strong>Location:</strong> {{ accommodation.location }}</p>
-  <p><strong>Guests:</strong> {{ accommodation.minGuestNumber }} - {{ accommodation.maxGuestNumber }}</p>
-  <p><strong>Conveniences:</strong> {{ accommodation.conveniences?.join(', ') }}</p>
-  <p><strong>Global Price:</strong> {{ accommodation.globalPrice | number:'1.0-2' }}</p>
 
+  <!-- Name -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="accommodation.name" placeholder="Accommodation Name" />
+  </mat-form-field>
+
+  <!-- Location -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Location</mat-label>
+    <input matInput [(ngModel)]="accommodation.location" placeholder="Location" />
+  </mat-form-field>
+
+  <!-- Guests -->
+  <div class="form-row">
+    <mat-form-field appearance="fill" class="half-width">
+      <mat-label>Min Guests</mat-label>
+      <input matInput type="number" [(ngModel)]="accommodation.minGuestNumber" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="half-width">
+      <mat-label>Max Guests</mat-label>
+      <input matInput type="number" [(ngModel)]="accommodation.maxGuestNumber" />
+    </mat-form-field>
+  </div>
+
+    <div class="conveniences-section">
+      <label>Conveniences</label>
+      <div class="conveniences">
+        <mat-checkbox *ngFor="let c of allConveniences" 
+                      [checked]="isChecked(c.value)"
+                      (change)="toggleConvenience($event, c.value)">
+          {{ c.name }}
+        </mat-checkbox>
+      </div>
+    </div>
+
+  <div class="form-row">
+    <!-- Global Price -->
+    <mat-form-field appearance="fill" class="half-width">
+      <mat-label>Global Price</mat-label>
+      <input matInput type="number" [(ngModel)]="accommodation.globalPrice" />
+    </mat-form-field>
+
+    <!-- Price Type -->
+    <mat-form-field appearance="fill" class="half-width">
+      <mat-label>Price Type</mat-label>
+      <mat-select [(ngModel)]="accommodation.priceType">
+        <mat-option [value]="0">Per Night</mat-option>
+        <mat-option [value]="1">Per Week</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>  
+  <!-- Save Button -->
+  <div class="button-row">
+    <button mat-raised-button color="primary" (click)="updateAccommodation()">Update</button>
+  </div>
+
+  <!-- Photos -->
   <div *ngIf="accommodation.photos?.length" class="photo-section">
-    <p><strong>Photos:</strong></p>
+    <h3>Photos</h3>
     <div class="photo-previews">
       <img *ngFor="let p of accommodation.photos" [src]="p" />
     </div>
   </div>
 
+  <!-- Action Buttons -->
   <div class="buttons">
     <button mat-raised-button color="primary" (click)="addAvailability()">Add Availability</button>
     <button mat-raised-button color="primary" (click)="addPrice()">Add Price</button>
   </div>
 
+  <!-- Availabilities Table -->
   <h3>Availabilities</h3>
   <table mat-table [dataSource]="accommodation.availability" class="mat-elevation-z8">
     <ng-container matColumnDef="start">
       <th mat-header-cell *matHeaderCellDef>Start</th>
-      <td mat-cell *matCellDef="let a">{{ a.duration.start | date }}</td>
+      <td mat-cell *matCellDef="let a">{{ a.duration.from | date }}</td>
     </ng-container>
     <ng-container matColumnDef="end">
       <th mat-header-cell *matHeaderCellDef>End</th>
-      <td mat-cell *matCellDef="let a">{{ a.duration.end | date }}</td>
+      <td mat-cell *matCellDef="let a">{{ a.duration.to | date }}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="['start', 'end']"></tr>
     <tr mat-row *matRowDef="let row; columns: ['start', 'end']"></tr>
   </table>
 
+  <!-- Prices Table -->
   <h3>Prices</h3>
   <table mat-table [dataSource]="accommodation.prices" class="mat-elevation-z8">
     <ng-container matColumnDef="amount">
       <th mat-header-cell *matHeaderCellDef>Amount</th>
       <td mat-cell *matCellDef="let p">{{ p.amount | number:'1.0-2' }}</td>
     </ng-container>
-    <ng-container matColumnDef="type">
-      <th mat-header-cell *matHeaderCellDef>Type</th>
-      <td mat-cell *matCellDef="let p">{{ p.priceType }}</td>
-    </ng-container>
     <ng-container matColumnDef="start">
       <th mat-header-cell *matHeaderCellDef>Start</th>
-      <td mat-cell *matCellDef="let p">{{ p.duration.start | date }}</td>
+      <td mat-cell *matCellDef="let p">{{ p.duration.from | date }}</td>
     </ng-container>
     <ng-container matColumnDef="end">
       <th mat-header-cell *matHeaderCellDef>End</th>
-      <td mat-cell *matCellDef="let p">{{ p.duration.end | date }}</td>
+      <td mat-cell *matCellDef="let p">{{ p.duration.to | date }}</td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="['amount','type','start','end']"></tr>
-    <tr mat-row *matRowDef="let row; columns: ['amount','type','start','end']"></tr>
+    <tr mat-header-row *matHeaderRowDef="['amount','start','end']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['amount','start','end']"></tr>
   </table>
 </div>

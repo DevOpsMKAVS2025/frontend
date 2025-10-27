@@ -6,6 +6,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { Accommodation, ConvenieceType, Price, PriceType } from '../../../../models/accommodation';
 
 @Component({
   selector: 'app-create-accommodation-dialog',
@@ -17,10 +18,10 @@ import { MatInputModule } from '@angular/material/input';
 export class CreateAccommodationDialogComponent {
   form: FormGroup;
   conveniences = [
-    { name: 'WIFI', value: "WIFI" },
-    { name: "Kitchen", value: "KITCHEN" },
-    { name: "Air Condition", value: "AIR_CONDITION" },
-    { name: "Free Parking", value: "FREE_PARKING" },
+    { name: 'WIFI', value: 0 },
+    { name: "Kitchen", value: 1 },
+    { name: "Air Condition", value: 2 },
+    { name: "Free Parking", value: 3 },
   ];
   photos: { name: string; data: string }[] = [];
 
@@ -45,7 +46,7 @@ export class CreateAccommodationDialogComponent {
     return this.form.get('conveniences') as FormArray;
   }
 
-  toggleConvenience(event: any, convenience: string) {
+  toggleConvenience(event: any, convenience: number) {
     if (event.checked) {
       this.conveniencesArray.push(this.fb.control(convenience));
     } else {
@@ -59,20 +60,6 @@ export class CreateAccommodationDialogComponent {
     if (index >= 0) this.photos.splice(index, 1);
   }
 
-  // openAvailabilityDialog() {
-  //   const dialogRef = this.dialog.open(AddAvailabilityDialogComponent, { width: '400px' });
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     if (result) this.availability.push(result);
-  //   });
-  // }
-
-  // openPriceDialog() {
-  //   const dialogRef = this.dialog.open(AddPriceDialogComponent, { width: '400px' });
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     if (result) this.globalPrice = result;
-  //   });
-  // }
-
   onFilesSelected(event: any) {
     const files: FileList = event.target.files;
 
@@ -81,7 +68,6 @@ export class CreateAccommodationDialogComponent {
       const reader = new FileReader();
 
       reader.onload = () => {
-        // reader.result is a base64 string
         const base64String = reader.result as string;;
         this.photos.push({ name: file.name, data: base64String });
       };
@@ -92,10 +78,11 @@ export class CreateAccommodationDialogComponent {
 
   save() {
     if (this.form.invalid) return;
-
     const accommodation = {
       ...this.form.value,
-      photos: this.photos,
+      photos: this.photos, //TODO: Check this when the imageService is added
+      prices: [],
+      availability: []
     };
 
     this.dialogRef.close(accommodation);
