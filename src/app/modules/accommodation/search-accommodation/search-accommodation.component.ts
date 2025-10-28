@@ -12,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatNativeDateModule } from '@angular/material/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-search-accommodation',
@@ -29,7 +30,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
     MatSortModule
   ],
   templateUrl: './search-accommodation.component.html',
-  styleUrls: ['./search-accommodation.component.css'] 
+  styleUrls: ['./search-accommodation.component.css']
 })
 
 export class SearchAccommodationComponent implements OnInit {
@@ -44,7 +45,8 @@ export class SearchAccommodationComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private service: AccommodationService
+    private service: AccommodationService,
+    private snackBar: MatSnackBar
   ) {
     try {
       this.form = this.fb.group({
@@ -62,49 +64,53 @@ export class SearchAccommodationComponent implements OnInit {
   ngOnInit(): void {
     this.loading = false;
 
-    // this.service.getPaged().subscribe({
-    //   next: (data) => {
-    //     this.results = data.results;
+    this.service.getPaged().subscribe({
+      next: (data) => {
+        this.results = data.results;
 
-    //     this.dataSource = new MatTableDataSource(this.results);
+        this.dataSource = new MatTableDataSource(this.results);
 
-    //     if (this.sort) {
-    //       this.dataSource.sort = this.sort;
-    //     }
+        if (this.sort) {
+          this.dataSource.sort = this.sort;
+        }
 
-    //     this.loading = false;
-    //   },
-    //   error: (err) => {
-    //     console.error('Error fetching accommodations:', err);
-    //     this.loading = false;
-    //   }
-    // });
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching accommodations:', err);
+        this.loading = false;
+      }
+    });
   }
 
   onSearch() {
     const loc = this.form.value.location || '';
     const guests = this.form.value.guests || 1;
     const start = this.form.value.start;
-    const end = this.form.value.end ;
-    
+    const end = this.form.value.end;
+
     const isEmpty = (v: any) =>
-    v === null || v === undefined || (typeof v === 'string' && v.trim() === '');
+      v === null || v === undefined || (typeof v === 'string' && v.trim() === '');
     if (isEmpty(start) || isEmpty(end)) {
-        alert('Please provide both start and end dates or neither.');
-        return;
+      this.snackBar.open('Please provide both start and end dates or neither.', 'Close', {
+        duration: 5000,
+      });
+      return;
     }
 
     if (start && end) {
       const s = new Date(start);
       const e = new Date(end);
       if (e <= s) {
-        alert('End date must be after start date.');
+        this.snackBar.open('End date must be after start date.', 'Close', {
+        duration: 5000,
+        });
         return;
       }
     }
 
     this.loading = true;
-    this.service.getByFilters(loc,guests,start,end).subscribe({
+    this.service.getByFilters(loc, guests, start, end).subscribe({
       next: (data) => {
         this.results = data.results;
 
@@ -131,7 +137,7 @@ export class SearchAccommodationComponent implements OnInit {
   calculatePrices(acc: Accommodation, startDate: string, endDate: string, guests: number) {
     return { 'total': 100, 'unitPrice': 50, 'priceType': 'per night' };
   }
-    
+
   ConvenieceTypeMap: { [key: number]: string } = {
     [ConvenieceType.WIFI]: 'Wi-Fi',
     [ConvenieceType.KITCHEN]: 'Kitchen',
