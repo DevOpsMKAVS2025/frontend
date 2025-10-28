@@ -7,6 +7,8 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angu
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Accommodation, ConvenieceType, Price, PriceType } from '../../../../models/accommodation';
+import { ImageService } from '../../../../services/image.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-create-accommodation-dialog',
@@ -23,12 +25,14 @@ export class CreateAccommodationDialogComponent {
     { name: "Air Condition", value: 2 },
     { name: "Free Parking", value: 3 },
   ];
-  photos: { name: string; data: string }[] = [];
+  photos: { name: string; data: File }[] = [];
+  photosPreview: { name: string; data: string }[] = [];
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CreateAccommodationDialogComponent>,
     private dialog: MatDialog,
+    private snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = this.fb.group({
@@ -39,9 +43,14 @@ export class CreateAccommodationDialogComponent {
       maxGuestNumber: [1, [Validators.required, Validators.min(1)]],
       isAutoReservation: [false],
       conveniences: this.fb.array([]),
-    })
+    }, { validators: this.maxGreaterThanMin });
   }
 
+  maxGreaterThanMin(group: FormGroup) {
+    const min = group.get('minGuestNumber')?.value;
+    const max = group.get('maxGuestNumber')?.value;
+    return max >= min ? null : { maxLessThanMin: true };
+  }
   get conveniencesArray() {
     return this.form.get('conveniences') as FormArray;
   }
@@ -55,8 +64,8 @@ export class CreateAccommodationDialogComponent {
     }
   }
 
-  removePhoto(photo: { name: string; data: string }) {
-    const index = this.photos.indexOf(photo);
+  removePhoto(name: string) {  
+    const index = this.photos.findIndex(p => p.name === name);
     if (index >= 0) this.photos.splice(index, 1);
   }
 
@@ -65,11 +74,12 @@ export class CreateAccommodationDialogComponent {
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
+      this.photos.push({ name: file.name, data: file });
       const reader = new FileReader();
 
       reader.onload = () => {
         const base64String = reader.result as string;;
-        this.photos.push({ name: file.name, data: base64String });
+        this.photosPreview.push({ name: file.name, data: base64String });
       };
 
       reader.readAsDataURL(file);
@@ -77,10 +87,11 @@ export class CreateAccommodationDialogComponent {
   }
 
   save() {
+
     if (this.form.invalid) return;
     const accommodation = {
       ...this.form.value,
-      photos: this.photos, //TODO: Check this when the imageService is added
+      photos: this.photos,
       prices: [],
       availability: []
     };
