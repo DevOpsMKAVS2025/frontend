@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AccommodationService } from '../../../services/accommodation-service';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,6 +16,7 @@ import { MatOption, MatOptionModule } from "@angular/material/core";
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ImageService } from '../../../services/image.service';
 
 @Component({
   selector: 'app-accommodation-details',
@@ -54,10 +55,12 @@ export class AccommodationDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private accommodationService: AccommodationService,
     private dialog: MatDialog,
-    private service: AccommodationService
+    private service: AccommodationService,
+    private imageService: ImageService,
+    private cdr: ChangeDetectorRef
   ) { }
 
- 
+  accommodationImages: string[] = [];
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
 
@@ -69,7 +72,19 @@ export class AccommodationDetailsComponent implements OnInit {
     this.accommodationService.getById(id)
       .pipe(take(1))
       .subscribe({
-        next: (data) => this.accommodation = data,
+        next: (data) => {
+          this.accommodation = data
+          this.accommodation.photos.forEach(p => {
+            this.imageService.getImageUrl(this.accommodation.id+'/'+p)
+              .pipe(take(1)).subscribe({
+              next:(img) =>{
+                this.accommodationImages.push(img.imageUrl)
+                this.cdr.detectChanges();
+              }
+            }   
+            )
+          });
+        },
         error: (err) => console.error('Error loading accommodation:', err)
       });
   }
@@ -87,7 +102,7 @@ export class AccommodationDetailsComponent implements OnInit {
                       this.accommodation.availability = [...this.accommodation.availability]; 
             },
             error: (err) => {
-                console.error('Greška prilikom kreiranja dostupnosti:', err);
+                console.error('Error while creating availability:', err);
             }  
           });
       }
@@ -107,7 +122,7 @@ export class AccommodationDetailsComponent implements OnInit {
             this.accommodation.prices = [...this.accommodation.prices]; 
           },
           error: (err) => {
-              console.error('Greška prilikom kreiranja cene:', err);
+              console.error('Error while creating price:', err);
           }  
         });
       }

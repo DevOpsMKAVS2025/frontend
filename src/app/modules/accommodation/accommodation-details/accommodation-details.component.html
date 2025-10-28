@@ -54,14 +54,14 @@
   </div>  
   <!-- Save Button -->
   <div class="button-row">
-    <button mat-raised-button color="primary" (click)="updateAccommodation()">Update</button>
+    <button mat-raised-button color="primary" (click)="updateAccommodation()">Save</button>
   </div>
 
   <!-- Photos -->
   <div *ngIf="accommodation.photos?.length" class="photo-section">
     <h3>Photos</h3>
     <div class="photo-previews">
-      <img *ngFor="let p of accommodation.photos" [src]="p" />
+      <img *ngFor="let p of accommodationImages" [src]="p" />
     </div>
   </div>
 
