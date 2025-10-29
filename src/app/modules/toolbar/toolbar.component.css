@@ -26,13 +26,21 @@
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
   transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  background: none;
 }
 
 .toolbar-link:hover {
   background-color: rgba(255, 255, 255, 0.2);
-  cursor: pointer;
 }
 
 .toolbar-link:last-child {
   margin-right: 0;
+}
+
+.fill-remaining-space {
+  flex: 1;
 }
