@@ -26,6 +26,6 @@ export class ToolbarComponent {
 
   protected logout(): void {
     this.userService.logOut();
-    this.#router.navigate(['/']);
+    this.#router.navigate(['/login']);
   }
 }

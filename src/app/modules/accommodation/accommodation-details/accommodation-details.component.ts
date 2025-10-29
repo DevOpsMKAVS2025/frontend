@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AccommodationService } from '../../../services/accommodation-service';
 import { MatDialog } from '@angular/material/dialog';
 import { Accommodation, Availability, ConvenieceType, Price, PriceType } from '../../../models/accommodation';
@@ -37,6 +37,7 @@ import { ImageService } from '../../../services/image.service';
 })
 
 export class AccommodationDetailsComponent implements OnInit {
+  readonly #router = inject(Router);
 
   accommodation: Accommodation = {
     name: '',
@@ -187,4 +188,16 @@ export class AccommodationDetailsComponent implements OnInit {
     { name: 'Air Condition', value: ConvenieceType.AIR_CONDITION },
     { name: 'Free Parking', value: ConvenieceType.FREE_PARKING }
   ];
+
+  protected openRequests(): void { 
+    this.#router.navigate(['/host/requests'], {
+      state: { selected: this.accommodation }
+    });
+  }
+
+  protected openReservations(): void { 
+    this.#router.navigate(['/host/reservations'], {
+      state: { selected: this.accommodation }
+    });
+  }
 }
