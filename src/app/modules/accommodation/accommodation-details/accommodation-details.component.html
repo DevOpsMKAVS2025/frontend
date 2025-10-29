@@ -1,5 +1,11 @@
 <div *ngIf="accommodation" class="details-container">
 
+  <!-- Request & Reservation Buttons -->
+  <div class="req-res-buttons">
+    <button class="request" mat-raised-button color="primary" (click)="openRequests()">Requests</button>
+    <button mat-raised-button color="primary" (click)="openReservations()">Reservations</button>
+  </div>
+
   <!-- Name -->
   <mat-form-field appearance="fill" class="full-width">
     <mat-label>Name</mat-label>

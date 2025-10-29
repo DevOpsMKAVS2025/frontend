@@ -81,7 +81,7 @@ export class LoginPageComponent {
         this.userService.setToken(resp);
         this.userService.loadUser();
         this.userService.user.subscribe((user: any) => {
-          this.router.navigate(["/home"])
+          this.router.navigate(["/accommodations"]);
         });
       },
       error: (error: any) => {
