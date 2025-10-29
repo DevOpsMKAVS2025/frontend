@@ -71,4 +71,8 @@ export class UserService {
     return this.http.get(`${environment.apiHost}account`);
   }
 
+  deleteAccount(): Observable<any> {
+    return this.http.delete(`${environment.apiHost}account`);
+  }
+
 }

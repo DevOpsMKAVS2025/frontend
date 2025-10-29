@@ -49,3 +49,21 @@
 .profile-field button:hover {
   background-color: #145ca0;
 }
+
+.delete-account-button {
+  width: 100%;
+  display: block;
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  margin-top: 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.delete-account-button:hover {
+  background-color: #b71c1c;
+}
