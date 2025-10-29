@@ -15,7 +15,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./account-page.component.css']
 })
 export class AccountPageComponent implements OnInit{
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private router: Router) {
   }
   user: UserData = {
     firstName: 'John',
@@ -45,6 +45,15 @@ export class AccountPageComponent implements OnInit{
 
   edit(field: keyof typeof this.editing) {
     this.editing[field] = true;
+  }
+
+  deleteAccount(){
+    this.userService.deleteAccount().subscribe({
+      next: () => {
+        this.userService.logOut();
+        this.router.navigate(["/login"]);
+      }
+    });
   }
 
   confirm(field: keyof UserData) {

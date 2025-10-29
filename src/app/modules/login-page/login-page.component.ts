@@ -81,13 +81,12 @@ export class LoginPageComponent {
         this.userService.setToken(resp);
         this.userService.loadUser();
         this.userService.user.subscribe((user: any) => {
-          console.log(user);
           this.router.navigate(["/home"])
         });
       },
       error: (error: any) => {
         this.authForm.get('pass')?.setValue(null);
-        this.errorMessage = error
+        this.errorMessage = error.error.message;
       }
     });
   }
