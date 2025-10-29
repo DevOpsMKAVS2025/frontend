@@ -11,6 +11,7 @@ import { RequestService } from '../../services/request.service';
 import { RequestCancelation } from '../../models/request';
 import { AccommodationService } from '../../services/accommodation.service';
 import { Accommodation } from '../../models/accommodation';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-host-request-reservation',
@@ -20,13 +21,15 @@ import { Accommodation } from '../../models/accommodation';
   styleUrl: './host-request-reservation.component.css',
 })
 export class HostRequestReservationComponent implements OnInit {
-  readonly #requestService = inject(RequestService);
   readonly #accommodationService = inject(AccommodationService);
+  readonly #requestService = inject(RequestService);
+  readonly #userService = inject(UserService);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
-  private router = inject(Router);
 
   tableType: 'requests' | 'reservations' = 'requests';
+
+  userMap: Map<string, string> = new Map();
 
   columnHeaders: { [key: string]: string } = {};
   rows: any[] = [];
@@ -46,10 +49,15 @@ export class HostRequestReservationComponent implements OnInit {
   ngOnInit(): void {
     const state = history.state;
     this.selectedAccommodation = state?.['selected'];
-    console.log(this.selectedAccommodation);
-
     this.autoApproveRequests = this.selectedAccommodation.isAutoReservation ?? false;
 
+    this.#userService.getAllUsers().subscribe((data: any[]) => {
+      this.userMap = new Map(data.map(u => [u.id, `${u.firstName} ${u.lastName}`]));
+      this.#setRows();
+    });
+  }
+
+  #setRows(): void {
     const type = this.route.snapshot.paramMap.get('type');
     this.tableType = type === 'reservations' ? 'reservations' : 'requests';
 
@@ -82,16 +90,16 @@ export class HostRequestReservationComponent implements OnInit {
     this.#requestService.getAccommodationRequests(this.selectedAccommodation.id ?? '')
     .subscribe((data: RequestCancelation[]) => {
       this.rows = data;
+      this.#mapUsers();
     });
-    // todo: Fetch user name 
   }
 
   #getReservations(): void {
      this.#requestService.getAccommodationReservations(this.selectedAccommodation.id ?? '')
     .subscribe((data: Request[]) => {
       this.rows = data;
+      this.#mapUsers();
     });
-    // todo: Fetch user name 
   }
 
   protected onAction(action: string, row: any): void {
@@ -130,5 +138,13 @@ export class HostRequestReservationComponent implements OnInit {
   protected onAutoApproveChange(checked: boolean): void {
     this.#accommodationService.toggleAutoReservation(this.selectedAccommodation.id ?? '')
     .subscribe(() => {});
+  }
+
+  #mapUsers(): void {
+    const enrichedRequests = this.rows.map(r => ({
+      ...r,
+      user: this.userMap.get(r.guestId) || "Unknown User"
+    }));
+    this.rows = enrichedRequests;
   }
 }

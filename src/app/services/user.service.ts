@@ -75,4 +75,7 @@ export class UserService {
     return this.http.delete(`${environment.authService}account`);
   }
 
+  getAllUsers(): Observable<any> {
+    return this.http.get(`${environment.authService}user`);
+  }
 }
