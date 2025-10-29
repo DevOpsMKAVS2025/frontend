@@ -1,3 +1,12 @@
+.req-res-buttons {
+  float: right;
+  margin-bottom: 20px;
+}
+
+.request {
+  margin-right: 10px;
+}
+
 .full-width {
   width: 100%;
   margin-bottom: 16px;

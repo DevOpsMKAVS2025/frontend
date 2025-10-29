@@ -47,10 +47,15 @@ export class GuestRequestReservationComponent implements OnInit {
     return [...this.columns, 'actions'];
   }
 
-  ngOnInit(): void {
-    this.#userService.loadUser();
-    this.guestId = this.#userService.user.value?.id || "";
+  constructor() {
+    this.#userService.user.subscribe({
+      next: (user) => {
+        this.guestId = user?.id!;
+      }
+    })
+  }
 
+  ngOnInit(): void {
     const type = this.#route.snapshot.paramMap.get('type');
     this.tableType = type === 'reservations' ? 'reservations' : 'requests';
 

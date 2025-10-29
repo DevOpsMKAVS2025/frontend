@@ -33,11 +33,14 @@ import { Accommodation } from '../../../models/accommodation';
 })
 export class CreateRequestModalComponent implements OnInit {
   dialogRef = inject(MatDialogRef<CreateRequestModalComponent>);
-  @Inject(MAT_DIALOG_DATA) public input: any
   readonly #accommodationService = inject(AccommodationService);
 
   accommodations: Accommodation[] = [];
   accommodationNames: string[] = [];
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
 
   ngOnInit(): void {
     this.getAccommodations();
@@ -73,7 +76,7 @@ export class CreateRequestModalComponent implements OnInit {
       this.dialogRef.close({
         accommodationId: selected?.id,
         accommodation: this.selectedAccommodation,
-        guestId: this.input.guestId,
+        guestId: this.data.guestId,
         startDate: this.range.value.start,
         endDate: this.range.value.end,
         guestNum: this.guests

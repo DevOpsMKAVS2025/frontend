@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,6 +10,7 @@ import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal.com
 import { RequestService } from '../../services/request.service';
 import { RequestCancelation } from '../../models/request';
 import { AccommodationService } from '../../services/accommodation.service';
+import { Accommodation } from '../../models/accommodation';
 
 @Component({
   selector: 'app-host-request-reservation',
@@ -23,6 +24,7 @@ export class HostRequestReservationComponent implements OnInit {
   readonly #accommodationService = inject(AccommodationService);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
+  private router = inject(Router);
 
   tableType: 'requests' | 'reservations' = 'requests';
 
@@ -30,6 +32,7 @@ export class HostRequestReservationComponent implements OnInit {
   rows: any[] = [];
   actions: { name: string; label: string; color?: string }[] = [];
 
+  selectedAccommodation!: Accommodation;
   autoApproveRequests = false;
 
   get columns() {
@@ -41,6 +44,12 @@ export class HostRequestReservationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const state = history.state;
+    this.selectedAccommodation = state?.['selected'];
+    console.log(this.selectedAccommodation);
+
+    this.autoApproveRequests = this.selectedAccommodation.isAutoReservation ?? false;
+
     const type = this.route.snapshot.paramMap.get('type');
     this.tableType = type === 'reservations' ? 'reservations' : 'requests';
 
@@ -70,7 +79,7 @@ export class HostRequestReservationComponent implements OnInit {
   }
 
   #getRequests(): void {
-    this.#requestService.getAccommodationRequests('0fa85f64-5717-4562-b3fc-2c963f66afa0') // todo
+    this.#requestService.getAccommodationRequests(this.selectedAccommodation.id ?? '')
     .subscribe((data: RequestCancelation[]) => {
       this.rows = data;
     });
@@ -78,7 +87,7 @@ export class HostRequestReservationComponent implements OnInit {
   }
 
   #getReservations(): void {
-     this.#requestService.getAccommodationReservations('0fa85f64-5717-4562-b3fc-2c963f66afa0') // todo
+     this.#requestService.getAccommodationReservations(this.selectedAccommodation.id ?? '')
     .subscribe((data: Request[]) => {
       this.rows = data;
     });
@@ -119,7 +128,7 @@ export class HostRequestReservationComponent implements OnInit {
   }
 
   protected onAutoApproveChange(checked: boolean): void {
-    this.#accommodationService.toggleAutoReservation('0fa85f64-5717-4562-b3fc-2c963f66afa0') // todo
+    this.#accommodationService.toggleAutoReservation(this.selectedAccommodation.id ?? '')
     .subscribe(() => {});
   }
 }
