@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
@@ -9,6 +9,7 @@ import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal.com
 import { CreateRequestModalComponent } from '../modal/create-request-modal/create-request-modal.component';
 import { RequestService } from '../../services/request.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-guest-request-reservation',
@@ -17,11 +18,14 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   templateUrl: './guest-request-reservation.component.html',
   styleUrl: './guest-request-reservation.component.css',
 })
-export class GuestRequestReservationComponent {
+export class GuestRequestReservationComponent implements OnInit {
   readonly #requestService = inject(RequestService);
+  readonly #userService = inject(UserService);
+  readonly #snackBar = inject(MatSnackBar);
   readonly #route = inject(ActivatedRoute);
   readonly #dialog = inject(MatDialog);
-  readonly #snackBar = inject(MatSnackBar);
+
+  guestId: string = '';
 
   tableType: 'requests' | 'reservations' = 'requests';
 
@@ -44,6 +48,9 @@ export class GuestRequestReservationComponent {
   }
 
   ngOnInit(): void {
+    this.#userService.loadUser();
+    this.guestId = this.#userService.user.value?.id || "";
+
     const type = this.#route.snapshot.paramMap.get('type');
     this.tableType = type === 'reservations' ? 'reservations' : 'requests';
 
@@ -57,14 +64,14 @@ export class GuestRequestReservationComponent {
   }
 
   #getRequests(): void {
-    this.#requestService.getAllGuestRequests('3fa85f64-5717-4562-b3fc-2c963f66afa6') // todo
+    this.#requestService.getAllGuestRequests(this.guestId)
     .subscribe((data: Request[]) => {
       this.rows = data;
     });
   }
 
   #getReservations(): void {
-    this.#requestService.getAllGuestReservations('3fa85f64-5717-4562-b3fc-2c963f66afa6') // todo
+    this.#requestService.getAllGuestReservations(this.guestId)
     .subscribe((data: Request[]) => {
       this.rows = data;
     });
@@ -98,6 +105,9 @@ export class GuestRequestReservationComponent {
   protected openCreateRequestDialog(): void {
     const dialogRef = this.#dialog.open(CreateRequestModalComponent, {
       width: '450px',
+      data: {
+        guestId: this.guestId
+      }
     });
 
     dialogRef.afterClosed().subscribe((result) => {

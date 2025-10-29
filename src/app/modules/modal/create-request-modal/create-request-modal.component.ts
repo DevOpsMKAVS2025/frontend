@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { ChangeDetectionStrategy, Component, Inject, inject, input, OnInit } from '@angular/core';
+import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -33,6 +33,7 @@ import { Accommodation } from '../../../models/accommodation';
 })
 export class CreateRequestModalComponent implements OnInit {
   dialogRef = inject(MatDialogRef<CreateRequestModalComponent>);
+  @Inject(MAT_DIALOG_DATA) public input: any
   readonly #accommodationService = inject(AccommodationService);
 
   accommodations: Accommodation[] = [];
@@ -72,7 +73,7 @@ export class CreateRequestModalComponent implements OnInit {
       this.dialogRef.close({
         accommodationId: selected?.id,
         accommodation: this.selectedAccommodation,
-        guestId: '3fa85f64-5717-4562-b3fc-2c963f66afa6', // todo
+        guestId: this.input.guestId,
         startDate: this.range.value.start,
         endDate: this.range.value.end,
         guestNum: this.guests
