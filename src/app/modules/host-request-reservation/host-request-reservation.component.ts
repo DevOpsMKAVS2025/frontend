@@ -49,7 +49,7 @@ export class HostRequestReservationComponent implements OnInit {
   ngOnInit(): void {
     const state = history.state;
     this.selectedAccommodation = state?.['selected'];
-    this.autoApproveRequests = this.selectedAccommodation.isAutoReservation ?? false;
+    this.autoApproveRequests = this.selectedAccommodation?.isAutoReservation ?? false;
 
     this.#userService.getAllUsers().subscribe((data: any[]) => {
       this.userMap = new Map(data.map(u => [u.id, `${u.firstName} ${u.lastName}`]));
