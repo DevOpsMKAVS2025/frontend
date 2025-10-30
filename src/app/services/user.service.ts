@@ -78,4 +78,8 @@ export class UserService {
   getAllUsers(): Observable<any> {
     return this.http.get(`${environment.authService}user`);
   }
+
+  getUserById(userId: string): Observable<any> {
+    return this.http.get(`${environment.authService}user/${userId}`);
+  }
 }
