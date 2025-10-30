@@ -1,6 +1,67 @@
-version: '3.8'
 
 services:
+  auth-service:
+    image: auth-service:latest
+    container_name: auth-service-container
+    ports:
+      - "1111:5156"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Release"
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=auth-database;Username=postgres;Password=admin;Pooling=true;"
+      Port: "5156"
+      Database__ApplyMigrations: "true"
+    depends_on:
+      - postgres
+  
+  booking-service:
+    image: booking-service:latest
+    container_name: booking-service-container
+    ports:
+      - "2222:5157"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Release"
+      ConnectionStrings__DefaultConnection: "Host=postgres2;Port=5432;Database=booking-database;Username=postgres;Password=admin;Pooling=true;"
+      ConnectionStrings__AuthDBString: "Host=postgres;Port=5432;Database=auth-database;Username=postgres;Password=admin;Pooling=true;"
+      Port: "5157"
+      Database__ApplyMigrations: "true"
+    depends_on:
+      - postgres
+      - postgres2
+      - redis
+
+  postgres:
+    image: postgres:15
+    container_name: postgres-container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: auth-database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_auth:/var/lib/postgresql/data
+
+  postgres2:
+    image: postgres:15
+    container_name: postgres-container2
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: booking-database
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data_booking:/var/lib/postgresql/data
+  
+  redis:
+    image: redis:7-alpine
+    container_name: redis-container
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - cache:/data
 
   frontend:
     image: booking-frontend:latest
@@ -10,6 +71,12 @@ services:
     environment:
       AUTHHOST: "http://localhost:1111/api/" # ovde ce port morati da se menja
       BOOKINGHOST: "http://localhost:2222/api/" # ovde ce port morati da se menja
-    # depends_on: # ovo treba da se odkomentarise kada se ubace servisi u compose fajl
-    #   - booking-service
-    #   - auth-service
+    depends_on: # ovo treba da se odkomentarise kada se ubace servisi u compose fajl
+      - booking-service
+      - auth-service
+  
+volumes:
+  postgres_data_auth:
+  postgres_data_booking:
+  cache:
+    driver: local
