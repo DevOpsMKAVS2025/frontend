@@ -21,6 +21,7 @@ export class RatingComponent implements OnInit {
   canRateHostIds: string[] = [];
   hasAccommodationRating: boolean = false;
   hasHostRating: boolean = false;
+  fullName: string = "";
 
   constructor(private ratingService: RatingService, private userService: UserService) {}
 
@@ -28,6 +29,7 @@ export class RatingComponent implements OnInit {
     this.loadRatings();
     this.userService.loadUser();
     this.guestId = this.userService.user.value?.id || "";
+    this.#getGuestById();
     this.loadCanRate();
   }
 
@@ -40,28 +42,22 @@ export class RatingComponent implements OnInit {
       next: (data) => {
         this.accommodations = data["accommodations"];
         this.hosts = data["hosts"];
-        console.log(this.accommodations)
-        console.log(this.hosts)
       },
       error: (err) => console.error('Error loading ratings:', err)
     });
   }
 
   loadCanRate(): void {
-    console.log(this.guestId)
     this.ratingService.getCanRate(this.guestId).subscribe({
       next: (data) => {
         this.canRateAccommodationsIds = data["accommodations"];
         this.canRateHostIds = data["hosts"];
-        console.log(this.canRateAccommodationsIds)
-        console.log(this.canRateHostIds)
       },
       error: (err) => console.error('Error checking canRate:', err)
     });
   }
 
   addRating(val: any, type: string) {
-    console.log('Adding rating:', val);
     let dto: NewRatingDto = {
       id: '',
       type: type,
@@ -84,7 +80,6 @@ export class RatingComponent implements OnInit {
   }
 
   updateRating(rating: any) {
-    console.log('Updating rating:', rating);
     this.ratingService.updateRating(rating.id, rating.evaluation).subscribe({
       next: (data) => { console.log("updated rating") },
       error: (err) => { console.log(err) }
@@ -92,11 +87,20 @@ export class RatingComponent implements OnInit {
   }
 
   deleteRating(ratingId: string) {
-    console.log('Deleting rating with id:', ratingId);
     this.ratingService.deleteRating(ratingId).subscribe({
       next: (data) => { console.log("deleted rating") },
       error: (err) => { console.log(err) }
     })
   }
 
+  #getGuestById(): void {
+    this.userService.getUserById(this.guestId).subscribe({
+      next: (data) => {
+        this.fullName = data.firstName + " " + data.lastName;
+      },
+      error: (err) => {
+        console.error('Error fetching guest data:', err);
+      }
+    });
+  }
 }
