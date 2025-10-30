@@ -31,16 +31,15 @@
     </mat-form-field>
   </div>
 
-    <div class="conveniences-section">
-      <label>Conveniences</label>
-      <div class="conveniences">
-        <mat-checkbox *ngFor="let c of allConveniences" 
-                      [checked]="isChecked(c.value)"
-                      (change)="toggleConvenience($event, c.value)">
-          {{ c.name }}
-        </mat-checkbox>
-      </div>
+  <div class="conveniences-section">
+    <label>Conveniences</label>
+    <div class="conveniences">
+      <mat-checkbox *ngFor="let c of allConveniences" [checked]="isChecked(c.value)"
+        (change)="toggleConvenience($event, c.value)">
+        {{ c.name }}
+      </mat-checkbox>
     </div>
+  </div>
 
   <div class="form-row">
     <!-- Global Price -->
@@ -53,11 +52,11 @@
     <mat-form-field appearance="fill" class="half-width">
       <mat-label>Price Type</mat-label>
       <mat-select [(ngModel)]="accommodation.priceType">
-        <mat-option [value]="0">Per Night</mat-option>
-        <mat-option [value]="1">Per Week</mat-option>
+        <mat-option [value]="0">Per Unit</mat-option>
+        <mat-option [value]="1">Per Guest</mat-option>
       </mat-select>
     </mat-form-field>
-  </div>  
+  </div>
   <!-- Save Button -->
   <div class="button-row">
     <button mat-raised-button color="primary" (click)="updateAccommodation()">Save</button>
