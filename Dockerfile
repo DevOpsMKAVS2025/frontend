@@ -1,49 +1,30 @@
-# =========================================
-# Stage 1: Build the Angular Application
-# =========================================
-# =========================================
-# Stage 1: Build the Angular Application
-# =========================================
-ARG NODE_VERSION=24.7.0-alpine
-ARG NGINX_VERSION=alpine3.22
+# Build Angular app
+FROM node:20 AS build
 
-# Use a lightweight Node.js image for building (customizable via ARG)
-FROM node:${NODE_VERSION} AS builder
-
-# Set the working directory inside the container
 WORKDIR /app
-
-# Copy package-related files first to leverage Docker's caching mechanism
-COPY package.json package-lock.json ./
-
-# Install project dependencies using npm ci (ensures a clean, reproducible install)
-RUN --mount=type=cache,target=/root/.npm npm ci
-
-# Copy the rest of the application source code into the container
 COPY . .
+RUN npm install
+RUN npm run build --prod
 
-# Build the Angular application
-RUN npm run build 
+# Serve with NGINX
+FROM nginx:alpine
 
-# =========================================
-# Stage 2: Prepare Nginx to Serve Static Files
-# =========================================
+ENV AUTHHOST=http://localhost:5156/api/
+ENV BOOKINGHOST=http://localhost:7056/api/
 
-FROM nginxinc/nginx-unprivileged:${NGINX_VERSION} AS runner
+# Instaliraj potrebne alate
+RUN apk add --no-cache grep sed bash
 
-# Use a built-in non-root user for security best practices
-USER nginx
+# Kopiraj build output
+COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
 
-# Copy custom Nginx config
-COPY nginx.conf /etc/nginx/nginx.conf
+# Kopiraj entrypoint skriptu
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Copy the static build output from the build stage to Nginx's default HTML serving directory
-COPY --chown=nginx:nginx --from=builder /app/dist/*/browser /usr/share/nginx/html
+# Kopiraj nginx config (ako koristiš proxy)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 5156 to allow HTTP traffic
-# Note: The default NGINX container now listens on port 8080 instead of 80 
-EXPOSE 5156
+EXPOSE 80
 
-# Start Nginx directly with custom config
-ENTRYPOINT ["nginx", "-c", "/etc/nginx/nginx.conf"]
-CMD ["-g", "daemon off;"]
+ENTRYPOINT ["/entrypoint.sh"]
