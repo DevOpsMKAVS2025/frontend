@@ -48,7 +48,6 @@ export class HostAccommodationComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(newAccommodationData => {
       if (newAccommodationData) {
-        // TODO: ADD OWNER ID
         const acc = this.mapToAccommodation(newAccommodationData)
         this.service.create(acc)
           .pipe(take(1))
