@@ -11,6 +11,7 @@ on:
     branches:
       - main
       - develop
+    types: [opened, synchronize, reopened, edited]
 
 jobs:
   install:
