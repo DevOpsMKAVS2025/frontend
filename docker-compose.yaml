@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+
+  frontend:
+    image: booking-frontend:latest
+    container_name: frontend-container
+    ports:
+      - "4200:80"
+    environment:
+      AUTHHOST: "http://localhost:1111/api/" # ovde ce port morati da se menja
+      BOOKINGHOST: "http://localhost:2222/api/" # ovde ce port morati da se menja
+    # depends_on: # ovo treba da se odkomentarise kada se ubace servisi u compose fajl
+    #   - booking-service
+    #   - auth-service
