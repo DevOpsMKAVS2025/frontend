@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -9,11 +9,27 @@ import { MatInputModule } from '@angular/material/input';
 import { Accommodation, ConvenieceType, Price, PriceType } from '../../../../models/accommodation';
 import { ImageService } from '../../../../services/image.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { UserService } from '../../../../services/user.service';
+import { MatOptionModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-create-accommodation-dialog',
   standalone: true,
-  imports: [MatInputModule, MatDialogModule, ReactiveFormsModule, MatCheckboxModule, MatButtonModule, CommonModule, MatIconModule],
+  imports: [
+    MatInputModule,
+    MatDialogModule,
+    ReactiveFormsModule,
+    MatCheckboxModule,
+    MatButtonModule,
+    CommonModule,
+    MatIconModule,
+    MatOptionModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+  ],
   templateUrl: './create-accommodation-dialog.component.html',
   styleUrl: './create-accommodation-dialog.component.css'
 })
@@ -33,6 +49,7 @@ export class CreateAccommodationDialogComponent {
     private dialogRef: MatDialogRef<CreateAccommodationDialogComponent>,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
+    private userService: UserService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = this.fb.group({
@@ -42,6 +59,7 @@ export class CreateAccommodationDialogComponent {
       minGuestNumber: [1, [Validators.required, Validators.min(1)]],
       maxGuestNumber: [1, [Validators.required, Validators.min(1)]],
       isAutoReservation: [false],
+      priceType: ['PER_UNIT'],
       conveniences: this.fb.array([]),
     }, { validators: this.maxGreaterThanMin });
   }
@@ -64,7 +82,7 @@ export class CreateAccommodationDialogComponent {
     }
   }
 
-  removePhoto(name: string) {  
+  removePhoto(name: string) {
     const index = this.photos.findIndex(p => p.name === name);
     if (index >= 0) this.photos.splice(index, 1);
   }
@@ -92,6 +110,7 @@ export class CreateAccommodationDialogComponent {
     const accommodation = {
       ...this.form.value,
       photos: this.photos,
+      ownerId: this.userService.user.value?.id,
       prices: [],
       availability: []
     };

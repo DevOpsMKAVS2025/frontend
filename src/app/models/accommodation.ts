@@ -51,6 +51,7 @@ export interface Accommodation {
   isAutoReservation?: boolean;
   ownerId?: string;
 }
+
 export interface AccommodationAndPrice {
   id: string; 
   name: string;
