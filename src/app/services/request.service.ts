@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { booking, environment } from '../env/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { RequestCancelation } from '../models/request';
+import { Request, RequestCancelation } from '../models/request';
 
 @Injectable({
   providedIn: 'root'

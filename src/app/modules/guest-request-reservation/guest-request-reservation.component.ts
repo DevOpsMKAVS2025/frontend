@@ -10,6 +10,7 @@ import { CreateRequestModalComponent } from '../modal/create-request-modal/creat
 import { RequestService } from '../../services/request.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { UserService } from '../../services/user.service';
+import { Request } from '../../models/request';
 
 @Component({
   selector: 'app-guest-request-reservation',
@@ -37,7 +38,7 @@ export class GuestRequestReservationComponent implements OnInit {
   };
 
   rows: Request[] = [];
-  actions: { name: string; label: string; color?: string }[] = [];
+  actions: { name: string; label: string; color?: string } [] = [];
 
   get columns() {
     return Object.keys(this.columnHeaders);
@@ -78,7 +79,12 @@ export class GuestRequestReservationComponent implements OnInit {
   #getReservations(): void {
     this.#requestService.getAllGuestReservations(this.guestId)
     .subscribe((data: Request[]) => {
-      this.rows = data;
+      const now = new Date();
+
+      this.rows = data.map(r => ({
+        ...r,
+        canReject: (new Date(r.startDate).getTime() - now.getTime()) >= 24 * 60 * 60 * 1000
+      }));
     });
   }
 

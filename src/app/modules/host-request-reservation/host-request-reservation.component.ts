@@ -8,7 +8,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal.component';
 import { RequestService } from '../../services/request.service';
-import { RequestCancelation } from '../../models/request';
+import { Request, RequestCancelation } from '../../models/request';
 import { AccommodationService } from '../../services/accommodation.service';
 import { Accommodation } from '../../models/accommodation';
 import { UserService } from '../../services/user.service';
