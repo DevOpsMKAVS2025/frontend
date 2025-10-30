@@ -25,9 +25,11 @@
     <th mat-header-cell *matHeaderCellDef>Actions</th>
     <td mat-cell *matCellDef="let element">
       @for (act of actions; track act.name) {
-        <button mat-button [color]="act.color" (click)="onAction(act.name, element)">
-          {{ act.label }}
-        </button>
+        @if(!(act.name === 'reject') || element.canReject) {
+          <button mat-button [color]="act.color" (click)="onAction(act.name, element)">
+            {{ act.label }}
+          </button>
+        }
       }
     </td>
   </ng-container>
