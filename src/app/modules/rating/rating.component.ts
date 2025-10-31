@@ -4,6 +4,7 @@ import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NewRatingDto } from '../../models/rating';
+import { firstValueFrom, map, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-rating',
@@ -21,7 +22,7 @@ export class RatingComponent implements OnInit {
   canRateHostIds: string[] = [];
   hasAccommodationRating: boolean = false;
   hasHostRating: boolean = false;
-  fullName: string = "";
+  ratingsAndUsers: any[] = [];
 
   constructor(private ratingService: RatingService, private userService: UserService) {}
 
@@ -29,7 +30,6 @@ export class RatingComponent implements OnInit {
     this.loadRatings();
     this.userService.loadUser();
     this.guestId = this.userService.user.value?.id || "";
-    this.#getGuestById();
     this.loadCanRate();
   }
 
@@ -42,6 +42,24 @@ export class RatingComponent implements OnInit {
       next: (data) => {
         this.accommodations = data["accommodations"];
         this.hosts = data["hosts"];
+
+        for (let acc of this.accommodations) {
+          for (let rating of acc.ratings) {
+            this.userService.getUserById(rating.guestId).subscribe({
+              next: (data) => { this.ratingsAndUsers.push({ "ratingId": rating.id, "username": data.username }); },
+              error: (err) => { console.log(err) }
+            })
+          }
+        }
+
+        for (let host of this.hosts) {
+          for (let rating of host.ratings) {
+            this.userService.getUserById(rating.guestId).subscribe({
+              next: (data) => { this.ratingsAndUsers.push({ "ratingId": rating.id, "username": data.username }); },
+              error: (err) => { console.log(err) }
+            })
+          }
+        }
       },
       error: (err) => console.error('Error loading ratings:', err)
     });
@@ -93,14 +111,11 @@ export class RatingComponent implements OnInit {
     })
   }
 
-  #getGuestById(): void {
-    this.userService.getUserById(this.guestId).subscribe({
-      next: (data) => {
-        this.fullName = data.firstName + " " + data.lastName;
-      },
-      error: (err) => {
-        console.error('Error fetching guest data:', err);
-      }
-    });
+  getGuestById(ratingId: string): string {
+    for (let pair of this.ratingsAndUsers) {
+      if (pair.ratingId == ratingId)
+        return pair.username;
+    }
+    return "n"
   }
 }

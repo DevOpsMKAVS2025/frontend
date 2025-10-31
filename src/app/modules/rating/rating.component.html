@@ -20,7 +20,7 @@
       <li *ngFor="let rating of acc.ratings" class="rating-item">
         <div>
           <strong>Evaluation:</strong> {{ rating.evaluation }}<br>
-          <strong>Guest:</strong> {{ fullName }}<br>
+          <strong>Guest:</strong> {{ getGuestById(rating.id) }} <br>
           <strong>Time:</strong> {{ rating.givenAt }}
         </div>
 
@@ -70,7 +70,7 @@
       <li *ngFor="let rating of host.ratings" class="rating-item">
         <div>
           <strong>Evaluation:</strong> {{ rating.evaluation }}<br>
-          <strong>Guest:</strong> {{ fullName }}<br>
+          <strong>Guest:</strong> {{ getGuestById(rating.id) }} <br>
           <strong>Time:</strong> {{ rating.givenAt }}
         </div>
 

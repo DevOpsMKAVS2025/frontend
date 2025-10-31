@@ -10,8 +10,10 @@ services:
       ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=auth-database;Username=postgres;Password=admin;Pooling=true;"
       Port: "5156"
       Database__ApplyMigrations: "true"
+      BookingServiceUrl: "http://booking-service:5157"
     depends_on:
       - postgres
+      - booking-service
   
   booking-service:
     image: booking-service:latest
@@ -24,6 +26,9 @@ services:
       ConnectionStrings__AuthDBString: "Host=postgres;Port=5432;Database=auth-database;Username=postgres;Password=admin;Pooling=true;"
       Port: "5157"
       Database__ApplyMigrations: "true"
+      AWS__AccessKey: ""
+      AWS__SecretKey: ""
+      AWS__Region: "eu-central-1"
     depends_on:
       - postgres
       - postgres2
@@ -69,9 +74,9 @@ services:
     ports:
       - "4200:80"
     environment:
-      AUTHHOST: "http://localhost:1111/api/" # ovde ce port morati da se menja
-      BOOKINGHOST: "http://localhost:2222/api/" # ovde ce port morati da se menja
-    depends_on: # ovo treba da se odkomentarise kada se ubace servisi u compose fajl
+      AUTHHOST: "http://localhost:1111/api/"
+      BOOKINGHOST: "http://localhost:2222/api/"
+    depends_on:
       - booking-service
       - auth-service
   
